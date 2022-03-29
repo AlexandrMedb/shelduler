@@ -2,11 +2,16 @@
   "name": "shelduler",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://188.93.21.172:9085",
   "dependencies": {
+    "@apollo/client": "^3.5.10",
     "@devexpress/dx-react-core": "^3.0.2",
     "@devexpress/dx-react-scheduler": "^3.0.2",
     "@devexpress/dx-react-scheduler-material-ui": "^3.0.2",
+    "@emotion/react": "^11.8.2",
+    "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.5.1",
+    "@mui/lab": "^5.0.0-alpha.74",
     "@mui/material": "^5.5.2",
     "@reduxjs/toolkit": "^1.8.0",
     "@testing-library/jest-dom": "^4.2.4",
@@ -18,6 +23,7 @@
     "@types/react-dom": "^16.9.14",
     "@types/react-redux": "^7.1.23",
     "@types/react-router-dom": "^5.3.3",
+    "apollo-upload-client": "^17.0.0",
     "clsx": "^1.1.1",
     "firebase": "^9.6.10",
     "firebaseui": "^6.0.1",
@@ -49,5 +55,13 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@types/apollo-upload-client": "^17.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.16.0",
+    "@typescript-eslint/parser": "^5.16.0",
+    "eslint": "^8.12.0",
+    "eslint-config-google": "^0.14.0",
+    "eslint-plugin-react": "^7.29.4"
   }
 }

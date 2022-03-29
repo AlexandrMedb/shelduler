@@ -2,93 +2,93 @@ import React, {useEffect, useState} from 'react';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
-import * as firebaseui from 'firebaseui'
-import 'firebaseui/dist/firebaseui.css'
-import { initializeApp } from "firebase/app";
+import * as firebaseui from 'firebaseui';
+import 'firebaseui/dist/firebaseui.css';
+import {initializeApp} from 'firebase/app';
+import {AllFeatures} from './allfeatures';
 
 // Configure Firebase.
 const firebaseConfig = {
-    apiKey: "AIzaSyDuYaUJ8ax3eM0YSP0i0vU0Et7Obdprjr4",
-    authDomain: "shelduler-b5359.firebaseapp.com",
-    projectId: "shelduler-b5359",
-    storageBucket: "shelduler-b5359.appspot.com",
-    messagingSenderId: "127252087161",
-    appId: "1:127252087161:web:cf3cca93bdd90a70d9afa8",
-    measurementId: "G-K26KZCZ8RG"
+  apiKey: 'AIzaSyDuYaUJ8ax3eM0YSP0i0vU0Et7Obdprjr4',
+  authDomain: 'shelduler-b5359.firebaseapp.com',
+  projectId: 'shelduler-b5359',
+  storageBucket: 'shelduler-b5359.appspot.com',
+  messagingSenderId: '127252087161',
+  appId: '1:127252087161:web:cf3cca93bdd90a70d9afa8',
+  measurementId: 'G-K26KZCZ8RG',
 };
 firebase.initializeApp(firebaseConfig);
 
 // Configure FirebaseUI.
 const uiConfig = {
-    signInSuccessUrl: '<url-to-redirect-to-on-success>',
-    signInOptions: [
-        {
-            provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-            clientId: 'xxxxxxxxxxxxxxxxx.apps.googleusercontent.com'
-        },
-        // {
-        //     provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        //     requireDisplayName: false
-        // }
+  signInSuccessUrl: '<url-to-redirect-to-on-success>',
+  signInOptions: [
+    {
+      provider: firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+      clientId: 'xxxxxxxxxxxxxxxxx.apps.googleusercontent.com',
+    },
+    // {
+    //     provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    //     requireDisplayName: false
+    // }
 
-        // Leave the lines as is for the providers you want to offer your users.
-        // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-        // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-        // firebase.auth.TwitterAuthProvider.PROVIDER_ID,
-        // firebase.auth.GithubAuthProvider.PROVIDER_ID,
-        firebase.auth.EmailAuthProvider.PROVIDER_ID,
-        // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
-        // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
-    ],
+    // Leave the lines as is for the providers you want to offer your users.
+    // firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    // firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+    // firebase.auth.TwitterAuthProvider.PROVIDER_ID,
+    // firebase.auth.GithubAuthProvider.PROVIDER_ID,
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    // firebase.auth.PhoneAuthProvider.PROVIDER_ID,
+    // firebaseui.auth.AnonymousAuthProvider.PROVIDER_ID
+  ],
 
-    // tosUrl and privacyPolicyUrl accept either url string or a callback
-    // function.
-    // Terms of service url/callback.
-    // tosUrl: '<your-tos-url>',
-    // Privacy policy url/callback.
-    privacyPolicyUrl: function() {
-        window.location.assign('<your-privacy-policy-url>');
-    }
+  // tosUrl and privacyPolicyUrl accept either url string or a callback
+  // function.
+  // Terms of service url/callback.
+  // tosUrl: '<your-tos-url>',
+  // Privacy policy url/callback.
+  privacyPolicyUrl: function() {
+    window.location.assign('<your-privacy-policy-url>');
+  },
 };
 const app = initializeApp(firebaseConfig);
 
 
 function SignInScreen() {
-    const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
+  const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
 
-    // Listen to the Firebase Auth state and set the local state.
-    useEffect(() => {
-        const unregisterAuthObserver = firebase.auth().onAuthStateChanged(user => {
-            setIsSignedIn(!!user);
-        });
-        return () => unregisterAuthObserver(); // Make sure we un-register Firebase observers when the component unmounts.
-    }, []);
+  // Listen to the Firebase Auth state and set the local state.
+  useEffect(() => {
+    const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
+      setIsSignedIn(!!user);
+    });
+    return () => unregisterAuthObserver();
+    // Make sure we un-register Firebase observers when the component unmounts.
+  }, []);
 
-    if (!isSignedIn) {
-        return (
-
-
-
-            <div style={{height: '100vh',display:"flex", justifyContent:"center", alignItems:"center"}} >
-                <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
-            </div>
-
-
-        );
-    }
-    console.log(firebase.auth().currentUser)
+  if (!isSignedIn) {
     return (
-        <div>
-            <h1>My App</h1>
-            <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
-            <a onClick={() => firebase.auth().signOut()}>Sign-out</a>
-        </div>
+
+
+      <div style={{height: '100vh',
+        display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+      </div>
+
+
     );
+  }
+  // console.log(firebase.auth().currentUser);
+  return (
+    <div>
+      <p>Welcome {firebase.auth().currentUser.displayName}! You are now signed-in!</p>
+      <a onClick={() => firebase.auth().signOut()}>Sign-out</a>
+      <AllFeatures/>
+    </div>
+  );
 }
 
 export default SignInScreen;
-
-
 
 
 //

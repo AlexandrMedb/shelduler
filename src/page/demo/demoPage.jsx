@@ -5,7 +5,7 @@ import {
 import Paper from '@mui/material/Paper';
 import TableCell from '@mui/material/TableCell';
 import Typography from '@mui/material/Typography';
-import { ViewState, EditingState } from '@devexpress/dx-react-scheduler';
+import {ViewState, EditingState} from '@devexpress/dx-react-scheduler';
 import classNames from 'clsx';
 import {
   Scheduler,
@@ -23,7 +23,7 @@ import WbSunny from '@mui/icons-material/WbSunny';
 import FilterDrama from '@mui/icons-material/FilterDrama';
 import Opacity from '@mui/icons-material/Opacity';
 import ColorLens from '@mui/icons-material/ColorLens';
-import { owners } from '../data/task';
+import {owners} from '../../data/task';
 
 const PREFIX = 'Demo';
 
@@ -53,14 +53,14 @@ const classes = {
   container: `${PREFIX}-container`,
 };
 
-const getBorder = theme => (`1px solid ${
-  theme.palette.mode === 'light'
-    ? lighten(alpha(theme.palette.divider, 1), 0.88)
-    : darken(alpha(theme.palette.divider, 1), 0.68)
+const getBorder = (theme) => (`1px solid ${
+  theme.palette.mode === 'light' ?
+    lighten(alpha(theme.palette.divider, 1), 0.88) :
+    darken(alpha(theme.palette.divider, 1), 0.68)
 }`);
 
-const DayScaleCell = props => (
-  <MonthView.DayScaleCell {...props} style={{ textAlign: 'center', fontWeight: 'bold' }} />
+const DayScaleCell = (props) => (
+  <MonthView.DayScaleCell {...props} style={{textAlign: 'center', fontWeight: 'bold'}} />
 );
 
 const StyledOpacity = styled(Opacity)(() => ({
@@ -79,15 +79,15 @@ const StyledFilterDrama = styled(FilterDrama)(() => ({
   },
 }));
 
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
+const StyledTableCell = styled(TableCell)(({theme}) => ({
   [`&.${classes.cell}`]: {
-    color: '#78909C!important',
-    position: 'relative',
-    userSelect: 'none',
-    verticalAlign: 'top',
-    padding: 0,
-    height: 100,
-    borderLeft: getBorder(theme),
+    'color': '#78909C!important',
+    'position': 'relative',
+    'userSelect': 'none',
+    'verticalAlign': 'top',
+    'padding': 0,
+    'height': 100,
+    'borderLeft': getBorder(theme),
     '&:first-of-type': {
       borderLeft: 'none',
     },
@@ -137,7 +137,7 @@ const StyledDivContent = styled('div')(() => ({
 
 const StyledAppointmentsAppointment = styled(Appointments.Appointment)(() => ({
   [`&.${classes.appointment}`]: {
-    borderRadius: '10px',
+    'borderRadius': '10px',
     '&:hover': {
       opacity: 0.6,
     },
@@ -232,7 +232,7 @@ const resources = [{
   instances: owners,
 }];
 
-const WeatherIcon = ({ id }) => {
+const WeatherIcon = ({id}) => {
   switch (id) {
     case 0:
       return <StyledOpacity className={classes.rain} fontSize="large" />;
@@ -252,9 +252,9 @@ const CellBase = React.memo(({
 }) => {
   const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
   const isFirstMonthDay = startDate.getDate() === 1;
-  const formatOptions = isFirstMonthDay
-    ? { day: 'numeric', month: 'long' }
-    : { day: 'numeric' };
+  const formatOptions = isFirstMonthDay ?
+    {day: 'numeric', month: 'long'} :
+    {day: 'numeric'};
   return (
     <StyledTableCell
       tabIndex={0}
@@ -278,22 +278,22 @@ const CellBase = React.memo(({
 
 const TimeTableCell = (CellBase);
 
-const Appointment = (({ ...restProps }) => (
+const Appointment = (({...restProps}) => (
   <StyledAppointmentsAppointment
     {...restProps}
     className={classes.appointment}
   />
 ));
 
-const AppointmentContent = (({ ...restProps }) => (
+const AppointmentContent = (({...restProps}) => (
   <StyledAppointmentsAppointmentContent {...restProps} className={classes.apptContent} />
 ));
 
-const FlexibleSpace = (({ ...restProps }) => (
+const FlexibleSpace = (({...restProps}) => (
   <StyledToolbarFlexibleSpace {...restProps} className={classes.flexibleSpace}>
     <div className={classes.flexContainer}>
       <ColorLens fontSize="large" htmlColor="#FF7043" />
-      <Typography variant="h5" style={{ marginLeft: '10px' }}>Art School</Typography>
+      <Typography variant="h5" style={{marginLeft: '10px'}}>Art School</Typography>
     </div>
   </StyledToolbarFlexibleSpace>
 ));
@@ -309,26 +309,26 @@ export default class Demo extends React.PureComponent {
     this.commitChanges = this.commitChanges.bind(this);
   }
 
-  commitChanges({ added, changed, deleted }) {
+  commitChanges({added, changed, deleted}) {
     this.setState((state) => {
-      let { data } = state;
+      let {data} = state;
       if (added) {
         const startingAddedId = data.length > 0 ? data[data.length - 1].id + 1 : 0;
-        data = [...data, { id: startingAddedId, ...added }];
+        data = [...data, {id: startingAddedId, ...added}];
       }
       if (changed) {
-        data = data.map(appointment => (
-          changed[appointment.id] ? { ...appointment, ...changed[appointment.id] } : appointment));
+        data = data.map((appointment) => (
+          changed[appointment.id] ? {...appointment, ...changed[appointment.id]} : appointment));
       }
       if (deleted !== undefined) {
-        data = data.filter(appointment => appointment.id !== deleted);
+        data = data.filter((appointment) => appointment.id !== deleted);
       }
-      return { data };
+      return {data};
     });
   }
 
   render() {
-    const { data } = this.state;
+    const {data} = this.state;
 
     return (
       <Paper>
