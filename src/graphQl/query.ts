@@ -14,6 +14,8 @@ export const GET_RESERVE = gql`
         reserve(filter:$filter){
             date_end,
             date_start,
+            name,
+            id,
             room{
                 name
                 id

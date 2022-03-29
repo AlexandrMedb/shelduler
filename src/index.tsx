@@ -22,13 +22,10 @@ const httpLink = createUploadLink({
   uri: API_URL,
 });
 
-console.log(process.env.REACT_APP_API_KEY);
-console.log(process.env.REACT_APP_API_ROLE);
-
 
 const authLink = setContext((_, {headers}) => {
-  const params = new URL(window.location.href).searchParams;
-  const token = params.get('token');
+  // const params = new URL(window.location.href).searchParams;
+  // const token = params.get('token');
 
   return {
     headers: {

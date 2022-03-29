@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {useEffect, useState} from 'react';
 import Paper from '@mui/material/Paper';
 import FormGroup from '@mui/material/FormGroup';
 import Checkbox from '@mui/material/Checkbox';
@@ -22,8 +22,9 @@ import {
 
 
 import {appointments} from '../data/demo';
-import {useState} from 'react';
 import {Autocomplete, TextField} from '@mui/material';
+import {connect} from 'react-redux';
+import {roomInterface} from '../interfaces/shelduleInterfaces';
 
 const PREFIX = 'Demo';
 export const classes = {
@@ -99,8 +100,26 @@ const FlexibleSpace = ({props}) => (
   />
 );
 
-export const AllFeatures= () => {
-  const [data, setData] = React.useState(appointments);
+
+const mapStateToProps =(state)=> {
+  const {reserve}=state;
+  return {reserve};
+};
+
+
+export const AllFeatures= connect(mapStateToProps)(({reserve}) => {
+  const [data, setData] = useState([]);
+  useEffect(()=>{
+    const dataHandled=reserve.map((el)=>({
+      title: el.name,
+      startDate: new Date(el.date_start),
+      endDate: new Date(el.date_end),
+      id: el.id,
+      location: el.room.name,
+    }));
+    setData(dataHandled);
+  }, [reserve]);
+
   const [currentDate, setCurrentDate]= useState('2018-06-27');
   const [currentViewName, setCurrentViewName]= useState('Week');
   const [editingOptions, setEditingOptions] = React.useState({
@@ -235,4 +254,4 @@ export const AllFeatures= () => {
       </Paper>
     </React.Fragment>
   );
-};
+});
