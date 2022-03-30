@@ -56,7 +56,7 @@ export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
     }});
   useEffect(() => {
     if (reserveGql.reserve) {
-      if (filter.room.id.eq!==-1) {
+      if (filter?.room?.id?.eq!==-1) {
         setData( reservesToAppointments(reserveGql.reserve));
       }
     }
