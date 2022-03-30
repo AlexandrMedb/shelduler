@@ -10,7 +10,7 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 export default function AdminPanel() {
   return (
-    <List sx={{width: 190, borderRight: '1px solid lightgray', minHeight: '100vh',
+    <List sx={{width: 190, borderRight: '1px solid lightgray', minHeight: '95vh',
       boxSizing: 'borderBox'}}>
       <NavBarItem icon={<CalendarMonthIcon/>} link={'/'} text={'Календарь'}/>
       <NavBarItem icon={<RoomPreferencesIcon/>} link={'/rooms'} text={'Комнаты'}/>

@@ -49,7 +49,7 @@ export const SignInScreen=()=> {
 
     );
   }
-  // console.log(firebase.auth().currentUser);
+  console.log(firebase.auth().currentUser);
   return (
     <>
       {/* <a onClick={() => firebase.auth().signOut()}>Sign-out</a>*/}
