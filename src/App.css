@@ -37,3 +37,12 @@
     transform: translateY(0px);
   }
 }
+
+
+.Layout-notesEditor{
+  display: none !important;
+}
+
+.Layout-root > p:nth-of-type(2){
+  display: none!important;
+}
