@@ -26,6 +26,14 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
   useEffect(() => {
     if (roomsGql.room) {
       setRooms(roomsGql.room);
+      const curId = sessionStorage.getItem('curRoom');
+      if (curId) {
+        const room = roomsGql.room.find((i: { id: string; })=> i.id == curId);
+        if (room) {
+          setRoom(room);
+          return;
+        }
+      }
       setRoom(roomsGql.room[0]);
     }
   }, [roomsGql]);

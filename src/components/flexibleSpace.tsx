@@ -29,6 +29,7 @@ export const FlexibleSpace = connect(mapStateToProps, {setRoom})((props: props) 
           console.log(value);
           if (value) {
             setRoom({id: value.id, name: value.label});
+            sessionStorage.setItem('curRoom', `${value.id}`);
           }
           // else setRoom({id: -1, name: ''});
         }}
