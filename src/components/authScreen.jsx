@@ -3,7 +3,7 @@ import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebaseui/dist/firebaseui.css';
-import {AllFeatures} from './allfeatures';
+import {Schedule} from './schedule';
 import {SchedulePage} from '../page/sheldulePage';
 
 const firebaseConfig = {
@@ -19,8 +19,10 @@ firebase.initializeApp(firebaseConfig);
 
 const uiConfig = {
   signInOptions: [
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    {
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      disableSignUp: {status: true},
+    },
   ],
 };
 

@@ -1,19 +1,52 @@
-export interface roomInterface{
+interface common {
     id:number,
     name:string
 }
 
-interface creatorInterface{
-    id:number,
+export interface roomInterface extends common{
+}
+
+export interface creatorInterface {
+    id:string,
     name:string
 }
 
-export interface reserveInterface {
+export interface reserveInterface extends common{
     date_end: string,
     date_start: string,
-    name:string,
-    id:number,
     room: roomInterface,
     creator: creatorInterface,
 }
 
+export interface reserveAddInterface{
+    name:string,
+    date_end: string,
+    date_start: string,
+    room: {
+        connect: number
+    },
+    creator:{
+        connect:string
+    }
+}
+
+export interface reserveUpdateInterface{
+    id:number;
+    name?:string,
+    date_end?: string,
+    date_start?: string,
+    room?: {
+        connect: number
+    },
+    creator?:{
+        connect:string
+    }
+}
+
+export interface appointmentInterface {
+    title: string,
+    startDate: Date,
+    endDate: Date,
+    id: number,
+    location: string,
+}

@@ -9,6 +9,24 @@ export const ROOM_INSERT = gql`
     }
 `;
 
+export const ROOM_UPDATE = gql`
+    mutation room_update(
+        $input:RoomUpdateInput){
+        room_update(input:$input){
+            id
+        }
+    }
+`;
+
+export const ROOM_DELETE = gql`
+    mutation room_delete(
+        $input:RoomDeleteInput){
+        room_delete(input:$input){
+            id
+        }
+    }
+`;
+
 // {
 //     "input": {
 //     "name": "Room1"
@@ -24,19 +42,24 @@ export const RESERVE_INSERT = gql`
     }
 `;
 
-// {
-//     "input": {
-//     "date_start": "2022-03-28T19:39:58+03:00",
-//         "date_end": "2022-03-28T19:39:58+03:00",
-//         "name": "Reserve1",
-//         "room": {
-//         "connect": 1
-//     },
-//     "creator":{
-//         "connect":"user1"
-//     }
-// }
-// }
+export const RESERVE_UPDATE = gql`
+    mutation reserve_update(
+        $input:ReserveUpdateInput){
+        reserve_update(input:$input){
+            id
+        }
+    }
+`;
+
+export const RESERVE_DELETE = gql`
+    mutation reserve_delete(
+        $input:ReserveDeleteInput){
+        reserve_delete(input:$input){
+            id
+        }
+    }
+`;
+
 
 export const USER_INSERT = gql`
     mutation user_insert(

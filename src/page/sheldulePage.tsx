@@ -1,11 +1,15 @@
-import React, {useEffect} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {useQuery} from '@apollo/client';
 import {GET_ROOMS} from '../graphQl/query';
 import {connect} from 'react-redux';
 import {setRooms} from 'reducer/roomsReducer';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
-import {RoomContainer} from '../containers/roomContainer';
 import {setRoom} from 'reducer/currentRoomReducer';
+import {ScheduleContainer} from '../containers/shelduleContainer';
+import AdminPanel from '../components/adminPanel';
+import {Route, Routes} from 'react-router-dom';
+import {RoomsContainer} from '../containers/roomsContainer';
+
 
 const mapStateToProps =({})=>({});
 
@@ -18,7 +22,7 @@ interface props{
 export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:props)=>{
   const {setRooms, setRoom}=props;
 
-  const {data: roomsGql = {}} = useQuery(GET_ROOMS);
+  const {data: roomsGql = {}, refetch} = useQuery(GET_ROOMS);
   useEffect(() => {
     if (roomsGql.room) {
       setRooms(roomsGql.room);
@@ -28,6 +32,14 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
 
 
   return (
-    <RoomContainer/>
+    <main style={{display: 'flex'}}>
+      <AdminPanel/>
+      <Routes>
+        <Route path="/" element={<ScheduleContainer/>}/>
+        <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
+        <Route path="/users" element={<div>user,</div>}/>
+      </Routes>
+    </main>
+
   );
 });
