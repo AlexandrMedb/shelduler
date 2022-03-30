@@ -58,7 +58,7 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
               <TableCell >Название комнаты</TableCell>
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right"> <AddCircleIcon onClick={clickHandler}
-                  sx={{ml: 1}}/>Действия</TableCell>
+                  sx={{ml: 1, cursor: 'pointer'}}/>Действия</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -74,8 +74,9 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
                 <TableCell align="right">
                   {row.id===activeRoom.id?(
                       <>
-                        <CheckIcon sx={{mr: 2}} onClick={deleteHandler}/>
-                        <DoNotDisturbOnIcon onClick={()=>setActiveRoom({id: -1, name: ''})}/>
+                        <CheckIcon sx={{mr: 2, cursor: 'pointer'}} onClick={deleteHandler}/>
+                        <DoNotDisturbOnIcon sx={{cursor: 'pointer'}}
+                          onClick={()=>setActiveRoom({id: -1, name: ''})}/>
                       </>
 
                   ):
@@ -85,8 +86,8 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
                             setActiveRoom(row);
                             setModalOpen(true);
                           } }
-                          sx={{mr: 2}}/>
-                        <DeleteIcon onClick={()=>setActiveRoom(row)}/>
+                          sx={{mr: 2, cursor: 'pointer'}}/>
+                        <DeleteIcon sx={{cursor: 'pointer'}} onClick={()=>setActiveRoom(row)}/>
                       </>
 
                   }

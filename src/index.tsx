@@ -30,8 +30,8 @@ const authLink = setContext((_, {headers}) => {
   return {
     headers: {
       ...headers,
-      'apimaker-secret': process.env.REACT_APP_API_KEY,
-      'apimaker-allowed-role': process.env.REACT_APP_API_ROLE,
+      'apimaker-secret': 'QazWsx321',
+      'apimaker-allowed-role': 'admin',
     },
   };
 });
