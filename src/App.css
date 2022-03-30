@@ -46,3 +46,7 @@
 .Layout-root > p:nth-of-type(2){
   display: none!important;
 }
+
+.MuiAutocomplete-clearIndicator{
+  display: none!important;
+}
