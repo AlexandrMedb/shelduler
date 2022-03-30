@@ -162,7 +162,7 @@ export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm/>
+        <AppointmentForm booleanEditorComponent={()=><div></div>}/>
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
