@@ -23,7 +23,7 @@ import WbSunny from '@mui/icons-material/WbSunny';
 import FilterDrama from '@mui/icons-material/FilterDrama';
 import Opacity from '@mui/icons-material/Opacity';
 import ColorLens from '@mui/icons-material/ColorLens';
-import {owners} from '../../data/task';
+import {owners} from '../../../demo-data/tasks';
 
 const PREFIX = 'Demo';
 
@@ -54,9 +54,9 @@ const classes = {
 };
 
 const getBorder = (theme) => (`1px solid ${
-  theme.palette.mode === 'light' ?
-    lighten(alpha(theme.palette.divider, 1), 0.88) :
-    darken(alpha(theme.palette.divider, 1), 0.68)
+    theme.palette.mode === 'light' ?
+        lighten(alpha(theme.palette.divider, 1), 0.88) :
+        darken(alpha(theme.palette.divider, 1), 0.68)
 }`);
 
 const DayScaleCell = (props) => (
@@ -245,6 +245,7 @@ const WeatherIcon = ({id}) => {
   }
 };
 
+// eslint-disable-next-line react/display-name
 const CellBase = React.memo(({
   startDate,
   formatDate,
@@ -253,8 +254,8 @@ const CellBase = React.memo(({
   const iconId = Math.abs(Math.floor(Math.sin(startDate.getDate()) * 10) % 3);
   const isFirstMonthDay = startDate.getDate() === 1;
   const formatOptions = isFirstMonthDay ?
-    {day: 'numeric', month: 'long'} :
-    {day: 'numeric'};
+        {day: 'numeric', month: 'long'} :
+        {day: 'numeric'};
   return (
     <StyledTableCell
       tabIndex={0}
@@ -318,7 +319,8 @@ export default class Demo extends React.PureComponent {
       }
       if (changed) {
         data = data.map((appointment) => (
-          changed[appointment.id] ? {...appointment, ...changed[appointment.id]} : appointment));
+                    changed[appointment.id] ?
+                        {...appointment, ...changed[appointment.id]} : appointment));
       }
       if (deleted !== undefined) {
         data = data.filter((appointment) => appointment.id !== deleted);

@@ -1,0 +1,28 @@
+$small: 640px;
+$medium: 900px;
+
+.wrapper {
+  display: flex;
+  @media screen and (max-width: $small) {
+    display: none;
+  }
+
+}
+
+.mobileVersion {
+  font-family: Roboto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  text-align: center;
+  background: lightgray;
+  h1{
+    font-weight: 500;
+    font-size: 1em;
+    color: rgba(0, 0, 0, 0.84);
+  }
+  @media screen and (min-width: $small) {
+    display: none;
+  }
+}

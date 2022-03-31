@@ -20,8 +20,8 @@ export const appointmentToReserve =({data, room, user}:{
   room:roomInterface,
   user:creatorInterface,
 } ):reserveAddInterface=>({
-  date_end: data.endDate.toISOString(),
   date_start: data.startDate.toISOString(),
+  date_end: new Date(new Date(data.startDate).setHours(data.startDate.getHours()+1)).toISOString(),
   name: data.title,
   room: {
     connect: room.id,

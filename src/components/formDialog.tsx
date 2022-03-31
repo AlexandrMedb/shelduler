@@ -29,8 +29,6 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
     setValue(activeRoom.name);
   }, [activeRoom]);
 
-  console.log(activeRoom);
-
 
   const handleClose = () => {
     setOpen(false);

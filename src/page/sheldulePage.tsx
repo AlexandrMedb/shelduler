@@ -1,14 +1,17 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {useQuery} from '@apollo/client';
 import {GET_ROOMS} from '../graphQl/query';
 import {connect} from 'react-redux';
 import {setRooms} from 'reducer/roomsReducer';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
 import {setRoom} from 'reducer/currentRoomReducer';
-import {ScheduleContainer} from '../containers/shelduleContainer';
 import AdminPanel from '../components/adminPanel';
 import {Route, Routes} from 'react-router-dom';
 import {RoomsContainer} from '../containers/roomsContainer';
+import {useMediaQuery} from '@mui/material';
+import {Schedule} from '../containers/schedule';
+
+import styles from './sheldulePage.module.scss';
 
 
 const mapStateToProps =({})=>({});
@@ -38,16 +41,22 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
     }
   }, [roomsGql]);
 
+  const matchesAdmin = useMediaQuery('(min-width:768px)');
 
   return (
-    <main style={{display: 'flex'}}>
-      <AdminPanel/>
-      <Routes>
-        <Route path="/" element={<ScheduleContainer/>}/>
-        <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
-        <Route path="/users" element={<div>user,</div>}/>
-      </Routes>
-    </main>
+    <>
+      <main className={styles.wrapper}>
+        {matchesAdmin && <AdminPanel/>}
+        <Routes>
+          <Route path="/" element={<Schedule/>}/>
+          <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
+          <Route path="/users" element={<div>user,</div>}/>
+        </Routes>
+      </main>
+      <div className={styles.mobileVersion}>
+        <h1>Мобильная версия пока не поддерживается</h1>
+      </div>
+    </>
 
   );
 });

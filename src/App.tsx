@@ -1,12 +1,8 @@
 import React from 'react';
 import './App.css';
-import {SignInScreen} from './components/authScreen';
+import {SignInScreen} from './containers/authScreen';
 
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-} from 'react-router-dom';
+import {BrowserRouter} from 'react-router-dom';
 
 const App=() =>{
   return (

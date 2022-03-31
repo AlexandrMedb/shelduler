@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from 'react';
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import {connect} from 'react-redux';
+import styles from './schedule.module.scss';
 import {ViewState, EditingState, IntegratedEditing} from '@devexpress/dx-react-scheduler';
 import {
   Scheduler,
@@ -12,16 +13,17 @@ import {
   DragDropProvider,
   DateNavigator,
   Toolbar,
-  TodayButton, ViewSwitcher,
+  ViewSwitcher,
   DayView,
   MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui';
-// import {AppointmentForm} from '@devexpress/dx-react-scheduler';
 import {useMutation, useQuery} from '@apollo/client';
 import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutation';
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
+import TableCell from '@mui/material/TableCell';
+import classNames from 'clsx';
 
 const mapStateToProps =({reserve, currentRoom})=> ({reserve, currentRoom});
 
@@ -37,7 +39,7 @@ const mapStateToProps =({reserve, currentRoom})=> ({reserve, currentRoom});
 //   location: string,
 // }
 
-export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
+export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
   const [data, setData] = useState([]);
 
 
@@ -113,6 +115,17 @@ export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
     }
   }, [setData, data]);
 
+  // eslint-disable-next-line react/display-name
+  const TimeTableCell = React.useCallback(React.memo(({onDoubleClick, ...restProps}) => (
+    <WeekView.TimeTableCell
+      {...restProps}
+      // onDoubleClick={ onDoubleClick}
+      onClick={onDoubleClick}
+    >
+      <div className={styles.cellText} >
+      click to Create</div> </WeekView.TimeTableCell>
+  )), []);
+
 
   return (
     <Paper>
@@ -130,16 +143,9 @@ export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
 
         />
         <DateNavigator />
-        {/* <TodayButton/>*/}
         <WeekView
-          startDayHour={10}
-          endDayHour={19}
-        />
-        <WeekView
-          name="Work Week"
-          excludedDays={[0, 6]}
-          startDayHour={9}
-          endDayHour={19}
+          startDayHour={6}
+          endDayHour={20}
         />
         <MonthView/>
         <DayView/>
@@ -154,17 +160,24 @@ export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
 
         <IntegratedEditing />
         <WeekView
+          timeTableCellComponent={TimeTableCell}
           startDayHour={9}
           endDayHour={19}
         />
 
-        <Appointments />
+        <Appointments
+          // appointmentComponent={Appointment}
+          // appointmentContentComponent={AppointmentContent}
+        />
 
         <AppointmentTooltip
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm booleanEditorComponent={()=><div></div>}/>
+        <AppointmentForm
+          booleanEditorComponent={()=><></>}
+          dateEditorComponent={()=><></>}
+        />
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
@@ -174,3 +187,14 @@ export const Schedule= connect(mapStateToProps)(({reserve, currentRoom}) => {
 
   );
 });
+
+
+// const Appointment = (({...restProps}) => (
+//   <Appointments.Appointment
+//     {...restProps}
+//     className={styles.appointment}
+//   > <Appointments.AppointmentContent {...restProps}
+//     /></Appointments.Appointment>
+// ));
+
+
