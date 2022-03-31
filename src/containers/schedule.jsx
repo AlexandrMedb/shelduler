@@ -17,6 +17,7 @@ import {
   DayView,
   MonthView,
 } from '@devexpress/dx-react-scheduler-material-ui';
+
 import {useMutation, useQuery} from '@apollo/client';
 import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutation';
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
@@ -133,6 +134,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
         data={data}
         height={window.innerHeight}
       >
+
         <Toolbar flexibleSpaceComponent={FlexibleSpace} />
 
         <ViewState
@@ -143,10 +145,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
 
         />
         <DateNavigator />
-        <WeekView
-          startDayHour={6}
-          endDayHour={20}
-        />
         <MonthView/>
         <DayView/>
         <ViewSwitcher />
@@ -161,8 +159,9 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
         <IntegratedEditing />
         <WeekView
           timeTableCellComponent={TimeTableCell}
-          startDayHour={9}
-          endDayHour={19}
+          startDayHour={6}
+          // endDayHour={19}
+
         />
 
         <Appointments
