@@ -5,6 +5,7 @@ export const GET_ROOMS = gql`
         room {
             id
             name
+            color
         }
     }
 `;

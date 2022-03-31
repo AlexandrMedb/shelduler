@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -17,7 +17,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import {useMutation, useQuery} from '@apollo/client';
 import {ROOM_DELETE} from '../graphQl/mutation';
-import {GET_ROOMS} from '../graphQl/query';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 
 const mapStateToProps =({rooms}:RootState)=>({rooms});
@@ -33,7 +32,7 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
 
   const [roomDelete] = useMutation(ROOM_DELETE);
   const [modalOpen, setModalOpen] =useState(false);
-  const [activeRoom, setActiveRoom] =useState<roomInterface>({id: -1, name: ''});
+  const [activeRoom, setActiveRoom] =useState<roomInterface>({id: -1, name: '', color: '#3787d7'});
 
 
   const clickHandler=()=>{

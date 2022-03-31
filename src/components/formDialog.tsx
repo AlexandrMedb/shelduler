@@ -4,12 +4,10 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
-import {useMutation, useQuery} from '@apollo/client';
-import {RESERVE_INSERT, ROOM_INSERT, ROOM_UPDATE} from '../graphQl/mutation';
-import {GET_ROOMS} from '../graphQl/query';
+import {useMutation} from '@apollo/client';
+import {ROOM_INSERT, ROOM_UPDATE} from '../graphQl/mutation';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
 
 interface props {
@@ -24,6 +22,7 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
   const [createRoom] = useMutation(ROOM_INSERT);
   const [updateRoom] = useMutation(ROOM_UPDATE);
   const [value, setValue] =useState(activeRoom?.name);
+  const [color, setColor] =useState(activeRoom?.color ||'#3787d7');
 
   useEffect(()=>{
     setValue(activeRoom.name);
@@ -38,7 +37,7 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
   const handleSubmit=()=>{
     if (value) {
       if (activeRoom.id!=-1) {
-        updateRoom({variables: {input: {name: value, id: activeRoom.id}}}).then(()=>{
+        updateRoom({variables: {input: {name: value, color: color, id: activeRoom.id}}}).then(()=>{
           refetch();
           handleClose();
         }).catch((error)=>{
@@ -46,7 +45,7 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
           handleClose();
         });
       } else {
-        createRoom({variables: {input: {name: value}}}).then(()=>{
+        createRoom({variables: {input: {name: value, color: color}}}).then(()=>{
           refetch();
           handleClose();
         }).catch((error)=>{
@@ -63,12 +62,12 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
         {activeRoom?.id!==-1?'Редактировать':'Создать комнату'}
 
       </DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{display: 'flex'}}>
         <TextField
           autoFocus
           margin="dense"
           id="name"
-          label="Название комнаты"
+          placeholder="Название комнаты"
           type="text"
           fullWidth
           variant="standard"
@@ -77,10 +76,22 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
             setValue(e.target.value);
           }}
         />
+        <TextField
+          sx={{width: '18px'}}
+          autoFocus
+          margin="dense"
+          type="color"
+          fullWidth
+          variant="standard"
+          value={color}
+          onChange={(e)=>{
+            setColor(e.target.value);
+          }}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose}>Отмена</Button>
-        <Button onClick={handleSubmit}>Создать</Button>
+        <Button onClick={handleSubmit}>{activeRoom.id!=-1?'Сохранить': 'Создать'}</Button>
       </DialogActions>
     </Dialog>
   );

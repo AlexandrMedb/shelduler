@@ -47,6 +47,11 @@
   display: none!important;
 }
 
-.MuiAutocomplete-clearIndicator{
+.Layout-booleanEditors{
   display: none!important;
 }
+
+.Layout-dateEditors{
+  display: none!important;
+}
+

@@ -4,6 +4,7 @@ interface common {
 }
 
 export interface roomInterface extends common{
+    color?:string
 }
 
 export interface creatorInterface {

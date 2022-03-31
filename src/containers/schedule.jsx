@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import {connect} from 'react-redux';
@@ -15,18 +15,17 @@ import {
   Toolbar,
   ViewSwitcher,
   DayView,
-  MonthView,
+  MonthView, Resources,
 } from '@devexpress/dx-react-scheduler-material-ui';
+
 
 import {useMutation, useQuery} from '@apollo/client';
 import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutation';
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
-import TableCell from '@mui/material/TableCell';
-import classNames from 'clsx';
 
-const mapStateToProps =({reserve, currentRoom})=> ({reserve, currentRoom});
+const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
 
 // interface props {
 //   reserve: reserveInterface[]
@@ -40,7 +39,7 @@ const mapStateToProps =({reserve, currentRoom})=> ({reserve, currentRoom});
 //   location: string,
 // }
 
-export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
+export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [data, setData] = useState([]);
 
 
@@ -79,7 +78,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
   const onCommitChanges = useCallback(({added, changed, deleted}) => {
     if (added) {
       const input =appointmentToReserve(
-          {data: added, room: currentRoom, user: {id: 'user1', name: '2'}});
+          {data: added, added: added.room, room: currentRoom, user: {id: 'user1', name: '2'}});
       createReserve({variables: {input}}).then(()=>refetch()).catch((error)=>{
         console.log(error);
       });
@@ -123,9 +122,51 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
       // onDoubleClick={ onDoubleClick}
       onClick={onDoubleClick}
     >
-      <div className={styles.cellText} >
-      click to Create</div> </WeekView.TimeTableCell>
+      <div className={styles.cellText}>click to create</div>
+    </WeekView.TimeTableCell>
   )), []);
+
+
+  const colors=useMemo(()=>{
+    const colors={};
+    rooms.forEach((el)=>{
+      colors[el.name]=el.color;
+    });
+    return colors;
+  }, [rooms]);
+
+
+  const Appointment = (props) => {
+    const {
+      style, ...restProps
+    }=props;
+    return (<Appointments.Appointment
+      {...restProps}
+      style={{
+        ...style,
+        backgroundColor: colors[restProps.data.location],
+
+      }}
+    >
+      <Appointments.AppointmentContent {...restProps}/>
+
+    </Appointments.Appointment>
+    );
+  };
+
+
+  const roomsToResources = rooms.map((el)=>({
+    text: el.name,
+    id: el.id,
+    color: el.color || 'black',
+  }));
+
+
+  const resources = [{
+    fieldName: 'room',
+    title: 'Rooms',
+    instances: roomsToResources,
+  }];
 
 
   return (
@@ -135,7 +176,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
         height={window.innerHeight}
       >
 
-        <Toolbar flexibleSpaceComponent={FlexibleSpace} />
 
         <ViewState
           currentDate={currentDate}
@@ -144,11 +184,23 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
           onCurrentViewNameChange={setCurrentViewName}
 
         />
+        <Toolbar flexibleSpaceComponent={FlexibleSpace} />
         <DateNavigator />
+
+        <WeekView
+          timeTableCellComponent={TimeTableCell}
+          startDayHour={6}
+          // endDayHour={19}
+
+        />
+        <ViewSwitcher />
         <MonthView/>
         <DayView/>
-        <ViewSwitcher />
+        <Appointments
+          appointmentContentComponent={Appointment}
+        />
 
+        {currentRoom.id!==-1 || <Resources data={resources}/>}
 
         <EditingState
           onCommitChanges={onCommitChanges}
@@ -157,43 +209,22 @@ export const Schedule= connect(mapStateToProps)(({currentRoom}) => {
         />
 
         <IntegratedEditing />
-        <WeekView
-          timeTableCellComponent={TimeTableCell}
-          startDayHour={6}
-          // endDayHour={19}
 
-        />
-
-        <Appointments
-          // appointmentComponent={Appointment}
-          // appointmentContentComponent={AppointmentContent}
-        />
 
         <AppointmentTooltip
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm
-          booleanEditorComponent={()=><></>}
-          dateEditorComponent={()=><></>}
-        />
+        <AppointmentForm/>
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
         />
+
       </Scheduler>
     </Paper>
 
   );
 });
-
-
-// const Appointment = (({...restProps}) => (
-//   <Appointments.Appointment
-//     {...restProps}
-//     className={styles.appointment}
-//   > <Appointments.AppointmentContent {...restProps}
-//     /></Appointments.Appointment>
-// ));
 
 

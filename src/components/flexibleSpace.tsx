@@ -30,8 +30,7 @@ export const FlexibleSpace = connect(mapStateToProps, {setRoom})((props: props) 
           if (value) {
             setRoom({id: value.id, name: value.label});
             sessionStorage.setItem('curRoom', `${value.id}`);
-          }
-          // else setRoom({id: -1, name: ''});
+          } else setRoom({id: -1, name: ''});
         }}
         disablePortal
         autoSelect={true}
