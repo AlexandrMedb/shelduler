@@ -27,7 +27,7 @@ import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutatio
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
-import {Grid, IconButton} from '@mui/material';
+import {Grid, IconButton, TextField} from '@mui/material';
 
 const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
 
@@ -188,7 +188,19 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm/>
+        <AppointmentForm
+          textEditorComponent={(props)=>{
+            console.log(props);
+            return <TextField
+              {...props}
+              // onKeyDown={(el)=>{
+              //   console.log(el.key);
+              // }}
+              sx={{width: '100%'}}
+              autoFocus={true} />;
+          }}
+
+        />
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
