@@ -78,7 +78,6 @@ export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
         />
         <TextField
           sx={{width: '18px'}}
-          autoFocus
           margin="dense"
           type="color"
           fullWidth

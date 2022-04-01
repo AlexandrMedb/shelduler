@@ -46,8 +46,6 @@ const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
 export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [data, setData] = useState([]);
 
-  console.log(data);
-
 
   const filter={};
   if (currentRoom.id!==-1) {
@@ -145,7 +143,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
     instances: roomsToResources,
   }];
 
-
+  const [a, setA]=useState('aa');
   return (
     <Paper>
       <Scheduler
@@ -188,19 +186,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm
-          textEditorComponent={(props)=>{
-            console.log(props);
-            return <TextField
-              {...props}
-              // onKeyDown={(el)=>{
-              //   console.log(el.key);
-              // }}
-              sx={{width: '100%'}}
-              autoFocus={true} />;
-          }}
-
-        />
+        <AppointmentForm/>
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
