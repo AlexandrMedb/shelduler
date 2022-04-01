@@ -18,12 +18,16 @@ import {
   MonthView, Resources,
 } from '@devexpress/dx-react-scheduler-material-ui';
 
+import MoreIcon from '@mui/icons-material/MoreVert';
+import Room from '@mui/icons-material/Room';
+
 
 import {useMutation, useQuery} from '@apollo/client';
 import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutation';
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
+import {Grid, IconButton} from '@mui/material';
 
 const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
 
@@ -41,6 +45,8 @@ const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
 
 export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [data, setData] = useState([]);
+
+  console.log(data);
 
 
   const filter={};
@@ -113,46 +119,17 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
         console.log(error);
       });
     }
-  }, [setData, data]);
+  }, []);
 
   // eslint-disable-next-line react/display-name
   const TimeTableCell = React.useCallback(React.memo(({onDoubleClick, ...restProps}) => (
     <WeekView.TimeTableCell
       {...restProps}
-      // onDoubleClick={ onDoubleClick}
       onClick={onDoubleClick}
     >
       <div className={styles.cellText}>click to create</div>
     </WeekView.TimeTableCell>
   )), []);
-
-
-  const colors=useMemo(()=>{
-    const colors={};
-    rooms.forEach((el)=>{
-      colors[el.name]=el.color;
-    });
-    return colors;
-  }, [rooms]);
-
-
-  const Appointment = (props) => {
-    const {
-      style, ...restProps
-    }=props;
-    return (<Appointments.Appointment
-      {...restProps}
-      style={{
-        ...style,
-        backgroundColor: colors[restProps.data.location],
-
-      }}
-    >
-      <Appointments.AppointmentContent {...restProps}/>
-
-    </Appointments.Appointment>
-    );
-  };
 
 
   const roomsToResources = rooms.map((el)=>({
@@ -175,8 +152,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
         data={data}
         height={window.innerHeight}
       >
-
-
         <ViewState
           currentDate={currentDate}
           onCurrentDateChange={setCurrentDate}
@@ -196,11 +171,9 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
         <ViewSwitcher />
         <MonthView/>
         <DayView/>
-        <Appointments
-          appointmentContentComponent={Appointment}
-        />
+        <Appointments/>
 
-        {currentRoom.id!==-1 || <Resources data={resources}/>}
+        <Resources data={resources}/>
 
         <EditingState
           onCommitChanges={onCommitChanges}

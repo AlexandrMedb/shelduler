@@ -1,5 +1,5 @@
 import React from 'react';
-import {Autocomplete, TextField} from '@mui/material';
+import {Autocomplete, Box, TextField} from '@mui/material';
 import {connect} from 'react-redux';
 import {RootState} from '../store/store';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
@@ -17,9 +17,9 @@ interface props {
 export const FlexibleSpace = connect(mapStateToProps, {setRoom})((props: props) => {
   const {rooms, currentRoom, setRoom} = props;
 
-  const roomsToLabel = rooms.map((el) => ({label: el.name, id: el.id}));
+  const roomsToLabel = rooms.map((el) => ({label: el.name, id: el.id, color: el.color}));
   // currentRoom
-  const label = {label: currentRoom.name, id: currentRoom.id};
+  const label = {label: currentRoom.name, id: currentRoom.id, color: '#3787d7'};
 
   return (
     <div style={{flexGrow: 1, display: 'flex', justifyContent: 'center'}}>
@@ -38,7 +38,21 @@ export const FlexibleSpace = connect(mapStateToProps, {setRoom})((props: props) 
         options={roomsToLabel}
         value={label}
         sx={{width: 300, p: 2}}
-        renderInput={(params) => <TextField sx={{p: 0}} {...params}/>}
+        renderInput={(params) => <TextField {...params} size="small"/>}
+        renderOption={(props, option) => (
+          <Box component="li" sx={{'& > img': {mr: 2, flexShrink: 0}}} {...props}>
+            <div style={{
+              background: option.color,
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              marginRight: '10px',
+            }}>
+
+            </div>
+            {option.label}
+          </Box>
+        )}
       />
     </div>
 

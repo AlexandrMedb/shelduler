@@ -12,6 +12,7 @@ export const reservesToAppointments = (data: reserveInterface[]) => (
     endDate: new Date(el.date_end),
     id: el.id,
     location: el.room.name,
+    room: el.room.id,
   })));
 
 
