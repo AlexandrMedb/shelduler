@@ -3,7 +3,7 @@ import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import {connect} from 'react-redux';
 import styles from './schedule.module.scss';
-import './sh.css';
+import './scheldule.css';
 import {ViewState, EditingState, IntegratedEditing} from '@devexpress/dx-react-scheduler';
 import {
   Scheduler,
@@ -73,13 +73,21 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
 
   const [currentDate, setCurrentDate]= useState(new Date().toISOString().split('T')[0]);
   const [currentViewName, setCurrentViewName]= useState('Week');
-  const [addedAppointment, setAddedAppointment] = useState({});
 
+  const Comp =(props)=> {
+    console.log(props);
+    return <div></div>;
+  };
 
   const onCommitChanges = useCallback(({added, changed, deleted}) => {
     if (added) {
       const input =appointmentToReserve(
-          {data: added, added: added.room, room: currentRoom, user: {id: 'user1', name: '2'}});
+          {data: added,
+            added: added.room,
+            room: currentRoom,
+            user: {id: 'user1', name: '2'}});
+      console.log(input);
+
       createReserve({variables: {input}}).then(()=>refetch()).catch((error)=>{
         console.log(error);
       });
@@ -117,7 +125,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   }, []);
 
   // eslint-disable-next-line react/display-name
-  const TimeTableCell = React.useCallback(React.memo(({onDoubleClick, ...restProps}) => (
+  const TimeTableCell = useCallback(React.memo(({onDoubleClick, ...restProps}) => (
     <WeekView.TimeTableCell
       {...restProps}
       onClick={onDoubleClick}
@@ -140,11 +148,53 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
     instances: roomsToResources,
   }];
 
-  return (
+  const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
+    console.log(restProps);
+    const onCustomFieldChange = (nextValue) => {
+      onFieldChange({customField: nextValue});
+    };
 
+    return (
+      <AppointmentForm.BasicLayout
+        appointmentData={appointmentData}
+        onFieldChange={onFieldChange}
+        {...restProps}
+      >
+        {/* <AppointmentForm.Label*/}
+        {/*  text="Custom Field"*/}
+        {/*  type="title"*/}
+        {/* />*/}
+        {/* <AppointmentForm.TextEditor*/}
+        {/*  value={appointmentData.customField}*/}
+        {/*  onValueChange={onCustomFieldChange}*/}
+        {/*  placeholder="Custom field"*/}
+        {/* />*/}
+      </AppointmentForm.BasicLayout>
+    );
+  };
+
+  const CommandButton = React.useCallback(({id, ...restProps}) => {
+    console.log(id);
+    console.log(restProps);
+    if (id === 'deleteButton') {
+      return <AppointmentForm.CommandButton id={id} {...restProps} disabled={!allowDeleting} />;
+    }
+    return <AppointmentForm.CommandButton id={id} {...restProps} />;
+  });
+
+  // const allowDrag = React.useCallback(
+  //     () => allowDragging && allowUpdating,
+  //     [allowDragging, allowUpdating],
+  // );
+  // const allowResize = React.useCallback(
+  //     () => allowResizing && allowUpdating,
+  //     [allowResizing, allowUpdating],
+  // );
+
+
+  return (
     <Paper
-      // className='paper'
-      className ={styles.paper}
+      className={currentRoom.id!==-1?'paper':''}
     >
       <Scheduler
         data={data}
@@ -175,8 +225,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
 
         <EditingState
           onCommitChanges={onCommitChanges}
-          addedAppointment={addedAppointment}
-          onAddedAppointmentChange={(appointment)=>setAddedAppointment(appointment)}
         />
 
         <IntegratedEditing />
@@ -186,7 +234,11 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm/>
+        <AppointmentForm
+          // basicLayoutComponent={BasicLayout}
+          commandButtonComponent={CommandButton}
+        />
+        <Comp/>
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
@@ -194,7 +246,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
 
       </Scheduler>
     </Paper>
-
 
   );
 });
