@@ -68,7 +68,14 @@ export const USER_INSERT = gql`
             id
         }
     }
+`;
 
+export const USER_DELETE = gql`
+    mutation user_delete($input:UserDeleteInput) {
+        user_delete(input:$input){
+            id
+        }
+    }
 `;
 
 // {

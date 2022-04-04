@@ -14,11 +14,11 @@ interface props {
     open:boolean,
     activeRoom:roomInterface
     setOpen:Dispatch<SetStateAction<boolean>>,
-    refetch:()=>any
+    refetch:()=>void
     setActiveRoom:Dispatch<SetStateAction<roomInterface>>
 }
 
-export const FormDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:props)=> {
+export const RoomDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:props)=> {
   const [createRoom] = useMutation(ROOM_INSERT);
   const [updateRoom] = useMutation(ROOM_UPDATE);
   const [value, setValue] =useState(activeRoom?.name);

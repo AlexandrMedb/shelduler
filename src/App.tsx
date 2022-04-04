@@ -1,15 +1,111 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import './App.css';
-import {SignInScreen} from './containers/authScreen';
-
 import {BrowserRouter} from 'react-router-dom';
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  DefaultOptions,
+} from '@apollo/client';
+import {setContext} from '@apollo/client/link/context';
+import {createUploadLink} from 'apollo-upload-client';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebaseui/dist/firebaseui.css';
+import {SchedulePage} from './page/sheldulePage';
+
+const API_URL = '/graphql';
+
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyB3bZ7aOfsYSC9lbyXascqSjEl5hggR-w8',
+  authDomain: 'rooms-2e40e.firebaseapp.com',
+  projectId: 'rooms-2e40e',
+  storageBucket: 'rooms-2e40e.appspot.com',
+  messagingSenderId: '578883404267',
+  appId: '1:578883404267:web:060e6d869a26dbc25d19ae',
+  measurementId: 'G-CZ3REN2VER',
+};
+firebase.initializeApp(firebaseConfig);
+
+const uiConfig = {
+  signInOptions: [
+    {
+      provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
+      disableSignUp: {status: true},
+    },
+  ],
+};
 
 
 const App=() =>{
+  const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
+
+
+  // Listen to the Firebase Auth state and set the local state.
+  useEffect(() => {
+    const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
+      setIsSignedIn(!!user);
+    });
+    return () => unregisterAuthObserver();
+    // Make sure we un-register Firebase observers when the component unmounts.
+  }, []);
+
+  if (!isSignedIn) {
+    return (
+      <div style={{height: '100vh',
+        display: 'flex', justifyContent: 'center', alignItems: 'center'}} >
+        <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+      </div>
+    );
+  }
+
+
+  const httpLink = createUploadLink({
+    uri: API_URL,
+  });
+
+
+  // console.log(firebase.auth()?.currentUser);
+
+  const authLink = setContext(async (_, {headers}) => {
+    const token = await firebase.auth()?.currentUser?.getIdToken();
+
+    return {
+      headers: {
+        ...headers,
+        'apimaker-token': token,
+        'apimaker-allowed-role': 'admin',
+      },
+    };
+  });
+
+  const defaultOptions:DefaultOptions = {
+    watchQuery: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'ignore',
+    },
+    query: {
+      fetchPolicy: 'no-cache',
+      errorPolicy: 'all',
+    },
+  };
+
+  const client = new ApolloClient({
+    link: authLink.concat(httpLink),
+    cache: new InMemoryCache({
+      addTypename: false,
+    }),
+    defaultOptions: defaultOptions,
+  });
+
   return (
-    <BrowserRouter>
-      <SignInScreen/>
-    </BrowserRouter>
+    <ApolloProvider client={client}>
+      <BrowserRouter>
+        <SchedulePage/>
+      </BrowserRouter>
+    </ApolloProvider>
     // <>
     //   <CustomDemo/>
     //   <Demo/>

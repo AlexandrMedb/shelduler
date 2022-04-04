@@ -1,3 +1,11 @@
+.paper{
+
+   &>.MuiPaper-root{
+    display: none !important;
+  }
+
+}
+
 .appointment {
 background: green !important;
 }

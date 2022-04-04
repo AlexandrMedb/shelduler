@@ -12,6 +12,7 @@ import {useMediaQuery} from '@mui/material';
 import {Schedule} from '../containers/schedule';
 
 import styles from './sheldulePage.module.scss';
+import {UsersContainer} from '../containers/userContainer';
 
 
 const mapStateToProps =({})=>({});
@@ -50,7 +51,7 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
         <Routes>
           <Route path="/" element={<Schedule/>}/>
           <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
-          <Route path="/users" element={<div>user,</div>}/>
+          <Route path="/users" element={<UsersContainer/>}/>
         </Routes>
       </main>
       <div className={styles.mobileVersion}>

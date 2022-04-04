@@ -49,10 +49,4 @@ export const GET_USER = gql`
     }
 `;
 
-// {
-//     "filter": {
-//     "id": {
-//         "eq": "user1"
-//     }
-// }
-// }
+

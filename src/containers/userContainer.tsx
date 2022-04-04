@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -16,52 +16,66 @@ import {RoomDialog} from '../components/roomDialog';
 import CheckIcon from '@mui/icons-material/Check';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import {useMutation, useQuery} from '@apollo/client';
-import {ROOM_DELETE} from '../graphQl/mutation';
+import {ROOM_DELETE, USER_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import {GET_ROOMS, GET_USER} from '../graphQl/query';
+import {UserDialog} from '../components/userDialog';
 
-const mapStateToProps =({rooms}:RootState)=>({rooms});
+const mapStateToProps = () => ({});
 
-interface props{
-    rooms:roomInterface[],
-  refetch:()=>any
-
+interface user {
+    id: string,
+    name: string
 }
-export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
-  const {refetch, rooms}=props;
+
+export const UsersContainer = connect(mapStateToProps)(() => {
+  const {data: userGql = {}, refetch} = useQuery(GET_USER);
+  const [users, setUsers] = useState<user[]>([]);
+  const [activeUser, setActiveUser] = useState<user>({id: '-1', name: ''});
+
+  useEffect(() => {
+    if (userGql.user) {
+      setUsers(userGql.user);
+    }
+  }, [userGql]);
+
+  const [userDelete] = useMutation(USER_DELETE);
+  const [modalOpen, setModalOpen] = useState(false);
 
 
-  const [roomDelete] = useMutation(ROOM_DELETE);
-  const [modalOpen, setModalOpen] =useState(false);
-  const [activeRoom, setActiveRoom] =useState<roomInterface>({id: -1, name: '', color: '#3787d7'});
-
-
-  const clickHandler=()=>{
+  const clickHandler = () => {
     setModalOpen(true);
   };
 
-  const deleteHandler =()=>{
-    roomDelete({variables: {input: {id: activeRoom.id}}}).then(()=>{
+  const deleteHandler = () => {
+    userDelete({variables: {input: {id: activeUser.id}}}).then(() => {
       refetch();
-    }).catch((error)=>{
+    }).catch((error) => {
       console.log(error);
     });
   };
 
   return (
-    <Box sx={{width: '100%',
-      display: 'flex', justifyContent: 'center'}}>
+    <Box sx={{
+      width: '100%',
+      display: 'flex', justifyContent: 'center',
+    }}>
+
       <TableContainer component={Paper}>
         <Table sx={{minWidth: 650}} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell >Название комнаты</TableCell>
+              <TableCell>Пользователи</TableCell>
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right"> <AddCircleIcon onClick={clickHandler}
-                  sx={{ml: 1, cursor: 'pointer'}}/>Действия</TableCell>
+                  sx={{
+                    ml: 1,
+                    cursor: 'pointer',
+                  }}/>Действия</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {rooms.map((row) => (
+            {users.map((row) => (
               <TableRow
                 key={row.id}
                 sx={{'&:last-child td, &:last-child th': {border: 0}}}
@@ -71,38 +85,35 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
                 </TableCell>
 
                 <TableCell align="right">
-                  {row.id===activeRoom.id?(
+                  {row.id === activeUser.id ? (
                       <>
                         <CheckIcon sx={{mr: 2, cursor: 'pointer'}} onClick={deleteHandler}/>
                         <DoNotDisturbOnIcon sx={{cursor: 'pointer'}}
-                          onClick={()=>setActiveRoom({id: -1, name: ''})}/>
+                          onClick={() => setActiveUser({id: '-1', name: ''})}/>
                       </>
-
-                  ):
+                      ) :
                       <>
                         <ModeEditOutlineIcon
-                          onClick={()=> {
-                            setActiveRoom(row);
+                          onClick={() => {
+                            setActiveUser(row);
                             setModalOpen(true);
-                          } }
+                          }}
                           sx={{mr: 2, cursor: 'pointer'}}/>
-                        <DeleteIcon sx={{cursor: 'pointer'}} onClick={()=>setActiveRoom(row)}/>
+                        <DeleteIcon sx={{cursor: 'pointer'}} onClick={() => setActiveUser(row)}/>
                       </>
-
                   }
-
-
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <RoomDialog open={modalOpen}
+      <UserDialog open={modalOpen}
         setOpen={setModalOpen}
-        activeRoom={activeRoom}
-        setActiveRoom={setActiveRoom}
-        refetch={refetch} />
+        activeUser={activeUser}
+        setActiveUser={setActiveUser}
+        refetch={refetch}
+      />
     </Box>
   );
 });

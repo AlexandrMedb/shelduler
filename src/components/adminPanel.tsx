@@ -4,7 +4,6 @@ import {Link} from 'react-router-dom';
 import ListItem from '@mui/material/ListItem';
 import RoomPreferencesIcon from '@mui/icons-material/RoomPreferences';
 import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
 import GroupIcon from '@mui/icons-material/Group';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
@@ -14,7 +13,7 @@ export default function AdminPanel() {
       boxSizing: 'borderBox'}}>
       <NavBarItem icon={<CalendarMonthIcon/>} link={'/'} text={'Календарь'}/>
       <NavBarItem icon={<RoomPreferencesIcon/>} link={'/rooms'} text={'Комнаты'}/>
-      {/* <NavBarItem icon={<GroupIcon/>} link={'/users'} text={'Пользователи'}/>*/}
+      <NavBarItem icon={<GroupIcon/>} link={'/users'} text={'Пользователи'}/>
     </List>
   );
 }
