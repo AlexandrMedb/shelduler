@@ -148,49 +148,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
     instances: roomsToResources,
   }];
 
-  const BasicLayout = ({onFieldChange, appointmentData, ...restProps}) => {
-    console.log(restProps);
-    const onCustomFieldChange = (nextValue) => {
-      onFieldChange({customField: nextValue});
-    };
-
-    return (
-      <AppointmentForm.BasicLayout
-        appointmentData={appointmentData}
-        onFieldChange={onFieldChange}
-        {...restProps}
-      >
-        {/* <AppointmentForm.Label*/}
-        {/*  text="Custom Field"*/}
-        {/*  type="title"*/}
-        {/* />*/}
-        {/* <AppointmentForm.TextEditor*/}
-        {/*  value={appointmentData.customField}*/}
-        {/*  onValueChange={onCustomFieldChange}*/}
-        {/*  placeholder="Custom field"*/}
-        {/* />*/}
-      </AppointmentForm.BasicLayout>
-    );
-  };
-
-  const CommandButton = React.useCallback(({id, ...restProps}) => {
-    console.log(id);
-    console.log(restProps);
-    if (id === 'deleteButton') {
-      return <AppointmentForm.CommandButton id={id} {...restProps} disabled={!allowDeleting} />;
-    }
-    return <AppointmentForm.CommandButton id={id} {...restProps} />;
-  });
-
-  // const allowDrag = React.useCallback(
-  //     () => allowDragging && allowUpdating,
-  //     [allowDragging, allowUpdating],
-  // );
-  // const allowResize = React.useCallback(
-  //     () => allowResizing && allowUpdating,
-  //     [allowResizing, allowUpdating],
-  // );
-
 
   return (
     <Paper
@@ -234,10 +191,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm
-          // basicLayoutComponent={BasicLayout}
-          commandButtonComponent={CommandButton}
-        />
+        <AppointmentForm/>
         <Comp/>
         <DragDropProvider
           allowDrag={() => true}
