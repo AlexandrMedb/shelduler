@@ -25,21 +25,16 @@ import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutatio
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
-import {TextField} from '@mui/material';
+import {Snackbar} from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteIcon from '@mui/icons-material/Delete';
+
+
+import Button from '@mui/material/Button';
+
 
 const mapStateToProps = ({currentRoom, rooms}) => ({currentRoom, rooms});
 
-// interface props {
-//   reserve: reserveInterface[]
-// }
-
-// interface schedule {
-//   title: string,
-//   startDate: SetStateAction<Date>,
-//   endDate: SetStateAction<Date>,
-//   id: number,
-//   location: string,
-// }
 
 export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [data, setData] = useState([]);
@@ -76,9 +71,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
   const [currentViewName, setCurrentViewName] = useState('Week');
 
-  const [curData, setCurData] = useState({});
-
-  console.log(curData);
+  const [curData, setCurData] = useState(false);
 
   const onCommitChanges = useCallback(({added, changed, deleted}) => {
     if (added) {
@@ -89,7 +82,6 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
             room: currentRoom,
             user: {id: 'user1', name: '2'},
           });
-
       createReserve({variables: {input}}).then(() => refetch()).catch((error) => {
         console.log(error);
       });
@@ -124,7 +116,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
         console.log(error);
       });
     }
-  }, []);
+  }, [currentRoom]);
 
   // eslint-disable-next-line react/display-name
   const TimeTableCell = useCallback(React.memo(({onDoubleClick, ...restProps}) => (
@@ -153,105 +145,158 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
   const save = useRef(null);
   const cancel = useRef(null);
 
+  const [openSnackbar, setOpenSnackbar] =useState(false);
+  const [snackbarText, setSnackbarText] =useState('Empty title');
+
+  const handleSnackbarClose =()=>{
+    setOpenSnackbar(false);
+    setSnackbarText('Empty form');
+  };
+
   return (
-    <Paper onKeyDown={(e) => {
-      if (e.key === 'Enter') {
-        save.current.click();
-      }
-      if (e.key==='Esc') {
-        cancel.current.click();
-      }
-    }}
-    className={currentRoom.id !== -1 ? 'paper' : ''}
-    >
-      <Scheduler
-        data={data}
-        height={window.innerHeight}
-      >
-        <ViewState
-          currentDate={currentDate}
-          onCurrentDateChange={setCurrentDate}
-          currentViewName={currentViewName}
-          onCurrentViewNameChange={setCurrentViewName}
-
-        />
-        <Toolbar flexibleSpaceComponent={FlexibleSpace}/>
-        <DateNavigator/>
-
-        <WeekView
-          timeTableCellComponent={TimeTableCell}
-          startDayHour={6}
-          // endDayHour={19}
-
-        />
-        <ViewSwitcher/>
-        <MonthView/>
-        <DayView/>
-        <Appointments/>
-
-        <Resources data={resources}/>
-
-        <EditingState
-          onCommitChanges={onCommitChanges}
-          // preCommitChanges={(a)=>{
-          //   console.log('preCommitChanges', a);
-          //   // return 'a'
-          // }}
-          onAppointmentChangesChange={(a) => {
-            console.log('onAppointmentChangesChange', a);
-            // return 'a'
-          }}
-          onAddedAppointmentChange={(a) => {
-            console.log('onAddedAppointmentChange', a);
-            setCurData(a);
-            // return 'a'
-          }}
-        />
-
-        <IntegratedEditing/>
-
-
-        <AppointmentTooltip
-          showOpenButton
-          showDeleteButton={true}
-        />
-        <AppointmentForm
-          commandLayoutComponent={
-            (props) => {
-              console.dir(props);
-              return <AppointmentForm.CommandLayout {...props}
-
-                commandButtonComponent={
-                  (props) => {
-                    console.log(props);
-
-                    return <button ref={props.id === 'saveButton' ? save : undefined}
-                      onClick={props.onExecute}>{props.id}</button>;
-                  }
-                }
-                onCommitButtonClick={(propss) => {
-                  console.log(propss);
-                  console.log(curData);
-                  if (!curData.title) {
-                    alert('!!!!!!!!!!');
-                  } else {
-                    props.onCommitButtonClick(props);
-                  }
-                }}
-              />;
-            }
+    <>
+      <Paper
+        className={currentRoom.id !== -1 ? 'paper' : ''}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            save.current.click();
           }
-          textEditorComponent={(props) => {
-            return <AppointmentForm.TextEditor {...props} autoFocus={true}/>;
-          }}
-        />
-        <DragDropProvider
-          allowDrag={() => true}
-          allowResize={() => true}
-        />
+          if (e.key === 'Escape') {
+            console.log('3');
+            cancel.current.click();
+          }
+        }}
+        onKeyUp={(e)=>{
+          if (e.key==='Escape') {
+            cancel.current.click();
+          }
+        }}
+      >
+        <Scheduler
+          data={data}
+          height={window.innerHeight}
+        >
+          <ViewState
+            currentDate={currentDate}
+            onCurrentDateChange={setCurrentDate}
+            currentViewName={currentViewName}
+            onCurrentViewNameChange={setCurrentViewName}
 
-      </Scheduler>
-    </Paper>
+          />
+          <Toolbar flexibleSpaceComponent={FlexibleSpace}/>
+          <DateNavigator/>
+
+          <WeekView
+            timeTableCellComponent={TimeTableCell}
+            startDayHour={6}
+
+          />
+          <ViewSwitcher/>
+          <MonthView/>
+          <DayView/>
+          <Appointments/>
+
+          <Resources data={resources}/>
+
+          <EditingState
+            defaultAddedAppointment = {{room: 10}}
+            onCommitChanges={onCommitChanges}
+
+            onAppointmentChangesChange={(props) => {
+              console.log(props);
+              if (!curData && props.title ) {
+                setCurData(true);
+              }
+              if (curData && !props.title) {
+                setCurData(false);
+              }
+            }}
+            onAddedAppointmentChange={(props) => {
+              if (currentRoom.id!==-1) {
+                if (!curData && props.title) setCurData(true);
+              } else {
+                if (!curData && props.title && props.room) setCurData(true);
+              }
+              if (curData && !props.title) {
+                setCurData(false);
+              }
+            }}
+          />
+
+          <IntegratedEditing/>
+
+
+          <AppointmentTooltip
+            showOpenButton
+            showDeleteButton={true}
+          />
+          <AppointmentForm
+            commandLayoutComponent={
+              (props) => {
+                return <AppointmentForm.CommandLayout {...props}
+                  disableSaveButton={!curData}
+                  commandButtonComponent={
+                    (props) => {
+                      if (props.id==='cancelButton') {
+                        return <div ref={cancel}
+                          style={{
+                            marginRight: 'auto',
+                            cursor: 'pointer',
+                          }} onClick={props.onExecute}>
+                          <CloseIcon/></div>;
+                      }
+                      if (props.id==='deleteButton') {
+                        return <DeleteIcon
+                          onClick={props.onExecute}
+                          sx={{
+                            cursor: 'pointer',
+                            color: 'rgba(0, 0, 0, 0.54)',
+                            borderRight: '1px solid rgba(0, 0, 0, 0.54)',
+                            mr: 0.5,
+                          }}
+                        />;
+                      }
+
+                      return <Button sx={{color: !curData?'lightgray':''}}
+                        ref={save} variant={'contained'}
+
+                        onClick={props.onExecute}>Save</Button>;
+                    }
+                  }
+                  onCommitButtonClick={(propses) => {
+                    if (!curData) {
+                      setOpenSnackbar(true);
+                    } else {
+                      props.onCommitButtonClick(propses);
+                    }
+                  }}
+                />;
+              }
+            }
+            textEditorComponent={(props) => {
+              return <AppointmentForm.TextEditor {...props} autoFocus={true}/>;
+            }}
+          />
+          <DragDropProvider
+            allowDrag={() => true}
+            allowResize={() => true}
+          />
+
+        </Scheduler>
+
+      </Paper>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarText}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      />
+    </>
+
 
   );
 });
