@@ -5,9 +5,11 @@
   "proxy": "http://188.93.21.172:9085",
   "dependencies": {
     "@apollo/client": "^3.5.10",
+    "@devexpress/dx-core": "^3.0.2",
     "@devexpress/dx-react-core": "^3.0.2",
     "@devexpress/dx-react-scheduler": "^3.0.2",
     "@devexpress/dx-react-scheduler-material-ui": "^3.0.2",
+    "@devexpress/dx-scheduler-core": "^3.0.2",
     "@emotion/react": "^11.8.2",
     "@emotion/styled": "^11.8.1",
     "@mui/icons-material": "^5.5.1",

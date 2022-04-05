@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import * as React from 'react';
 import Paper from '@mui/material/Paper';
 import {connect} from 'react-redux';
@@ -25,8 +25,9 @@ import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutatio
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
+import {TextField} from '@mui/material';
 
-const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
+const mapStateToProps = ({currentRoom, rooms}) => ({currentRoom, rooms});
 
 // interface props {
 //   reserve: reserveInterface[]
@@ -40,13 +41,13 @@ const mapStateToProps =({currentRoom, rooms})=> ({currentRoom, rooms});
 //   location: string,
 // }
 
-export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
+export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [data, setData] = useState([]);
 
 
-  const filter={};
-  if (currentRoom.id!==-1) {
-    filter.room={
+  const filter = {};
+  if (currentRoom.id !== -1) {
+    filter.room = {
       id: {
         eq: +currentRoom.id,
       },
@@ -56,11 +57,12 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   const {data: reserveGql = {}, refetch} = useQuery(GET_RESERVE, {
     variables: {
       filter: {...filter},
-    }});
+    },
+  });
   useEffect(() => {
     if (reserveGql.reserve) {
-      if (filter?.room?.id?.eq!==-1) {
-        setData( reservesToAppointments(reserveGql.reserve));
+      if (filter?.room?.id?.eq !== -1) {
+        setData(reservesToAppointments(reserveGql.reserve));
       }
     }
   }, [reserveGql, currentRoom]);
@@ -71,28 +73,33 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [deleteReserve] = useMutation(RESERVE_DELETE);
 
 
-  const [currentDate, setCurrentDate]= useState(new Date().toISOString().split('T')[0]);
-  const [currentViewName, setCurrentViewName]= useState('Week');
+  const [currentDate, setCurrentDate] = useState(new Date().toISOString().split('T')[0]);
+  const [currentViewName, setCurrentViewName] = useState('Week');
 
+  const [curData, setCurData] = useState({});
+
+  console.log(curData);
 
   const onCommitChanges = useCallback(({added, changed, deleted}) => {
     if (added) {
-      const input =appointmentToReserve(
-          {data: added,
+      const input = appointmentToReserve(
+          {
+            data: added,
             added: added.room,
             room: currentRoom,
-            user: {id: 'user1', name: '2'}});
+            user: {id: 'user1', name: '2'},
+          });
 
-      createReserve({variables: {input}}).then(()=>refetch()).catch((error)=>{
+      createReserve({variables: {input}}).then(() => refetch()).catch((error) => {
         console.log(error);
       });
     }
     if (changed) {
-      const id=Object.keys(changed)[0];
-      const inputAppointment={id, ...changed[id]};
-      const input ={id};
+      const id = Object.keys(changed)[0];
+      const inputAppointment = {id, ...changed[id]};
+      const input = {id};
 
-      Object.keys(inputAppointment).forEach((el)=> {
+      Object.keys(inputAppointment).forEach((el) => {
         switch (el) {
           case 'startDate':
             input.date_start = inputAppointment[el].toISOString();
@@ -106,14 +113,14 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
         }
       });
 
-      updateReserve({variables: {input}}).then(()=>refetch()).catch((error)=>{
+      updateReserve({variables: {input}}).then(() => refetch()).catch((error) => {
         console.log(error);
       });
     }
 
 
     if (deleted !== undefined) {
-      deleteReserve({variables: {input: {id: deleted}}}).then(()=>refetch()).catch((error)=>{
+      deleteReserve({variables: {input: {id: deleted}}}).then(() => refetch()).catch((error) => {
         console.log(error);
       });
     }
@@ -130,7 +137,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   )), []);
 
 
-  const roomsToResources = rooms.map((el)=>({
+  const roomsToResources = rooms.map((el) => ({
     text: el.name,
     id: el.id,
     color: el.color || 'black',
@@ -143,10 +150,16 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
     instances: roomsToResources,
   }];
 
+  const save = React.createRef();
+  const cancel = React.createRef();
 
   return (
-    <Paper
-      className={currentRoom.id!==-1?'paper':''}
+    <Paper onKeyDown={(e) => {
+      if (e.key === 'Enter') {
+        button.current.click();
+      }
+    }}
+    className={currentRoom.id !== -1 ? 'paper' : ''}
     >
       <Scheduler
         data={data}
@@ -159,8 +172,8 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           onCurrentViewNameChange={setCurrentViewName}
 
         />
-        <Toolbar flexibleSpaceComponent={FlexibleSpace} />
-        <DateNavigator />
+        <Toolbar flexibleSpaceComponent={FlexibleSpace}/>
+        <DateNavigator/>
 
         <WeekView
           timeTableCellComponent={TimeTableCell}
@@ -168,7 +181,7 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           // endDayHour={19}
 
         />
-        <ViewSwitcher />
+        <ViewSwitcher/>
         <MonthView/>
         <DayView/>
         <Appointments/>
@@ -177,19 +190,60 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
 
         <EditingState
           onCommitChanges={onCommitChanges}
+          // preCommitChanges={(a)=>{
+          //   console.log('preCommitChanges', a);
+          //   // return 'a'
+          // }}
+          onAppointmentChangesChange={(a) => {
+            console.log('onAppointmentChangesChange', a);
+            // return 'a'
+          }}
+          onAddedAppointmentChange={(a) => {
+            console.log('onAddedAppointmentChange', a);
+            setCurData(a);
+            // return 'a'
+          }}
         />
 
-        <IntegratedEditing />
+        <IntegratedEditing/>
 
 
         <AppointmentTooltip
           showOpenButton
           showDeleteButton={true}
         />
-        <AppointmentForm/>
+        <AppointmentForm
+          commandLayoutComponent={
+            (props) => {
+              console.dir(props);
+              return <AppointmentForm.CommandLayout {...props}
+
+                commandButtonComponent={
+                  (props) => {
+                    console.log(props);
+                    return <button ref={props.id === 'saveButton' ? save : undefined}
+                      onClick={props.onExecute}>{props.id}</button>;
+                  }
+                }
+                onCommitButtonClick={(propss) => {
+                  console.log(propss);
+                  console.log(curData);
+                  if (!curData.title) {
+                    alert('!!!!!!!!!!');
+                  } else {
+                    props.onCommitButtonClick(props);
+                  }
+                }}
+              />;
+            }
+          }
+          textEditorComponent={(props) => {
+            return <AppointmentForm.TextEditor {...props} autoFocus={true}/>;
+          }}
+        />
         <DragDropProvider
           allowDrag={() => true}
-          allowResize={()=>true}
+          allowResize={() => true}
         />
 
       </Scheduler>
