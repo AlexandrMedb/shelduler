@@ -150,13 +150,16 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
     instances: roomsToResources,
   }];
 
-  const save = React.createRef();
-  const cancel = React.createRef();
+  const save = useRef(null);
+  const cancel = useRef(null);
 
   return (
     <Paper onKeyDown={(e) => {
       if (e.key === 'Enter') {
-        button.current.click();
+        save.current.click();
+      }
+      if (e.key==='Esc') {
+        cancel.current.click();
       }
     }}
     className={currentRoom.id !== -1 ? 'paper' : ''}
@@ -221,6 +224,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
                 commandButtonComponent={
                   (props) => {
                     console.log(props);
+
                     return <button ref={props.id === 'saveButton' ? save : undefined}
                       onClick={props.onExecute}>{props.id}</button>;
                   }
