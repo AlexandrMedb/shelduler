@@ -29,17 +29,6 @@ export const GET_RESERVE = gql`
     }
 `;
 
-
-// {
-//     "filter": {
-//     "room":{
-//         "id": {
-//             "eq": 1
-//         }
-//     }
-// }
-// }
-
 export const GET_USER = gql`
     query($filter:UserFilterInput) {
         user(filter:$filter) {

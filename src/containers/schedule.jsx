@@ -74,10 +74,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
   const [currentDate, setCurrentDate]= useState(new Date().toISOString().split('T')[0]);
   const [currentViewName, setCurrentViewName]= useState('Week');
 
-  const Comp =(props)=> {
-    console.log(props);
-    return <div></div>;
-  };
 
   const onCommitChanges = useCallback(({added, changed, deleted}) => {
     if (added) {
@@ -86,7 +82,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
             added: added.room,
             room: currentRoom,
             user: {id: 'user1', name: '2'}});
-      console.log(input);
 
       createReserve({variables: {input}}).then(()=>refetch()).catch((error)=>{
         console.log(error);
@@ -192,7 +187,6 @@ export const Schedule= connect(mapStateToProps)(({currentRoom, rooms}) => {
           showDeleteButton={true}
         />
         <AppointmentForm/>
-        <Comp/>
         <DragDropProvider
           allowDrag={() => true}
           allowResize={()=>true}
