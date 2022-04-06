@@ -7,7 +7,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {useMutation} from '@apollo/client';
-import {ROOM_INSERT, ROOM_UPDATE, USER_INSERT, USER_UPDATE} from '../graphQl/mutation';
+import {USER_INSERT, USER_UPDATE} from '../graphQl/mutation';
 
 interface props {
     open:boolean,
@@ -54,16 +54,36 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
     setActiveUser({id: '-1', name: '', email: ''});
   };
 
-  // useEffect( ()=>{
-  //   if (activeUser.id!=='-1') {
-  //     setFormData({...formData,
-  //       name: {...formData.name, value: activeUser.name}},
-  //         ss: {...formData.email, value: activeUser.email}},
-  //     );
-  //     updateFormValue({value: activeUser.name, field: 'name'});
-  //     updateFormValue({value: activeUser.email, field: 'email'});
-  //   }
-  // }, [activeUser]);
+  useEffect( ()=>{
+    if (activeUser.id!=='-1') {
+      setFormData({
+        ...formData,
+        name: {...formData.name, value: activeUser.name},
+        email: {...formData.email, value: activeUser.email},
+      });
+    } else {
+      setFormData(
+          {
+            name: {
+              value: '',
+              error: '',
+            },
+            email: {
+              value: '',
+              error: '',
+            },
+            password: {
+              value: '',
+              error: '',
+            },
+            repeatPassword: {
+              value: '',
+              error: '',
+            },
+          },
+      );
+    }
+  }, [activeUser]);
 
   const updateFormValue=({value, field}:{value:string, field:string})=>{
     setFormData({...formData, [field]: {...formData[field], value: value}});
@@ -72,7 +92,6 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
   const updateFormError=({value, field}:{value:string, field:string})=>{
     setFormData({...formData, [field]: {...formData[field], error: value}});
   };
-
 
   const lengthValidate=({field, length, message}:{field:string, length:number, message:string})=>{
     if (formData[field].value) {
@@ -101,19 +120,23 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
   };
 
   const passwordValidate=()=>{
-    lengthValidate({
-      field: 'password', length: 6, message: 'Слишком короткий пароль',
-    });
+    if (activeUser.id==='-1' || formData.password.value) {
+      lengthValidate({
+        field: 'password', length: 6, message: 'Слишком короткий пароль',
+      });
+    }
   };
 
   const repeatPasswordValidate=()=>{
-    if (formData.password?.value && formData.repeatPassword?.value) {
-      if (formData.password?.value===formData.repeatPassword?.value) {
-        updateFormError({value: '', field: 'repeatPassword'});
-        return;
+    if (activeUser.id==='-1' || formData.password.value) {
+      if (formData.password?.value && formData.repeatPassword?.value) {
+        if (formData.password?.value===formData.repeatPassword?.value) {
+          updateFormError({value: '', field: 'repeatPassword'});
+          return;
+        }
       }
+      updateFormError({value: 'Пароли не совпадают', field: 'repeatPassword'});
     }
-    updateFormError({value: 'Пароли не совпадают', field: 'repeatPassword'});
   };
 
   const disableSubmit=()=>{
@@ -128,10 +151,10 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
   const handleSubmit=()=>{
     nameValidate();
     emailValidate();
-    passwordValidate();
-    repeatPasswordValidate();
-    if (!disableSubmit()) {
-      if (activeUser.id==='-1') {
+    if (activeUser.id==='-1') {
+      passwordValidate();
+      repeatPasswordValidate();
+      if (!disableSubmit()) {
         createUser({variables: {input: {
           password: formData.password.value,
           email: formData.email.value,
@@ -146,42 +169,31 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
           refetch();
         });
       }
-      if (activeUser.id!=='-1') {
-        updateUser({variables: {input: {
-          password: formData.password.value,
-          email: formData.email.value,
-          name: formData.name.value,
-        }}}).then((res)=>{
-          console.log(res);
-          handleClose();
-          refetch();
-        }).catch((err)=>{
-          console.log(err);
-          handleClose();
-          refetch();
-        });
+    } else {
+      if (formData.password) {
+        passwordValidate();
+        repeatPasswordValidate();
+        if (!disableSubmit()) {
+          const input:{id:string, email:string, name:string, password?:string}={
+            id: activeUser.id,
+            email: formData.email.value,
+            name: formData.name.value,
+          };
+          if (formData.password.value) {
+            input.password=formData.password.value;
+          }
+          updateUser({variables: {input}}).then((res)=>{
+            console.log(res);
+            handleClose();
+            refetch();
+          }).catch((err)=>{
+            console.log(err);
+            handleClose();
+            refetch();
+          });
+        }
       }
     }
-
-    // if (value) {
-    //   if (activeUser.id!=='-1') {
-    //     updateRoom({variables: {input: {name: value, id: activeUser.id}}}).then(()=>{
-    //       refetch();
-    //       handleClose();
-    //     }).catch((error)=>{
-    //       console.log(error);
-    //       handleClose();
-    //     });
-    //   } else {
-    //     createRoom({variables: {input: {name: value}}}).then(()=>{
-    //       refetch();
-    //       handleClose();
-    //     }).catch((error)=>{
-    //       console.log(error);
-    //       handleClose();
-    //     });
-    //   }
-    // }
   };
 
 
@@ -229,10 +241,16 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
           error={!!formData.password.error}
           helperText={formData.password.error}
           onBlur={passwordValidate}
-          required
-          label={'Пароль'}
+          required ={activeUser.id==='-1'}
+          label={activeUser.id==='-1'?'Пароль': 'Сбросить пароль'}
           margin="dense"
           type="password"
+          inputProps={{
+            autocomplete: 'new-password',
+            form: {
+              autocomplete: 'off',
+            },
+          }}
           fullWidth
           variant="standard"
           value={formData.password.value}
@@ -240,21 +258,24 @@ export const UserDialog=({open, setOpen, activeUser, refetch, setActiveUser}:pro
             updateFormValue({value: e.target.value, field: 'password'});
           }}
         />
-        <TextField
-          error={!!formData.repeatPassword.error}
-          helperText={formData.repeatPassword.error}
-          onBlur={repeatPasswordValidate}
-          required
-          label={'Повторите пароль'}
-          margin="dense"
-          type="password"
-          fullWidth
-          variant="standard"
-          value={formData.repeatPassword.value}
-          onChange={(e:React.ChangeEvent<HTMLInputElement>)=>{
-            updateFormValue({value: e.target.value, field: 'repeatPassword'});
-          }}
-        />
+
+        {(activeUser.id==='-1' || formData.password.value) && (
+          <TextField
+            error={!!formData.repeatPassword.error}
+            helperText={formData.repeatPassword.error}
+            onBlur={repeatPasswordValidate}
+            required={activeUser.id === '-1' || !!formData.password.value}
+            label={'Повторите пароль'}
+            margin="dense"
+            type="password"
+            fullWidth
+            variant="standard"
+            value={formData.repeatPassword.value}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              updateFormValue({value: e.target.value, field: 'repeatPassword'});
+            }}
+          />
+        )}
       </DialogContent>
       <DialogActions>
         <Button sx={{background: 'rgba(0,0,0,0.50)'}}

@@ -105,9 +105,6 @@ export const UsersContainer = connect(mapStateToProps)(() => {
                             }}
                             sx={{mr: 1, cursor: 'pointer'}}/>
                         </Tooltip>
-                        <Tooltip title="Изменить пароль">
-                          <LockIcon sx={{mr: 1, cursor: 'pointer'}}/>
-                        </Tooltip>
                         <Tooltip title="Удалить пользователя">
                           <DeleteIcon sx={{cursor: 'pointer'}} onClick={() => setActiveUser(row)}/>
                         </Tooltip>
