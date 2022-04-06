@@ -6,32 +6,32 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Box} from '@mui/material';
+import {Box, Tooltip} from '@mui/material';
 import {connect} from 'react-redux';
-import {roomInterface} from '../interfaces/shelduleInterfaces';
-import {RootState} from '../store/store';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
-import {RoomDialog} from '../components/roomDialog';
 import CheckIcon from '@mui/icons-material/Check';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import {useMutation, useQuery} from '@apollo/client';
-import {ROOM_DELETE, USER_DELETE} from '../graphQl/mutation';
+import {USER_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import {GET_ROOMS, GET_USER} from '../graphQl/query';
+import {GET_USER} from '../graphQl/query';
 import {UserDialog} from '../components/userDialog';
+import LockIcon from '@mui/icons-material/Lock';
 
 const mapStateToProps = () => ({});
 
 interface user {
     id: string,
-    name: string
+    name: string,
+    email: string,
 }
 
 export const UsersContainer = connect(mapStateToProps)(() => {
   const {data: userGql = {}, refetch} = useQuery(GET_USER);
   const [users, setUsers] = useState<user[]>([]);
-  const [activeUser, setActiveUser] = useState<user>({id: '-1', name: ''});
+  const [activeUser, setActiveUser] = useState<user>({id: '-1', name: '', email: ''});
+  // const [formType, setFormType]=useState<''|'password'|''>('')
 
   useEffect(() => {
     if (userGql.user) {
@@ -65,7 +65,8 @@ export const UsersContainer = connect(mapStateToProps)(() => {
         <Table sx={{minWidth: 650}} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Пользователи</TableCell>
+              <TableCell>Пользователь</TableCell>
+              <TableCell>Email</TableCell>
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right"> <AddCircleIcon onClick={clickHandler}
                   sx={{
@@ -83,23 +84,33 @@ export const UsersContainer = connect(mapStateToProps)(() => {
                 <TableCell component="th" scope="row">
                   {row.name}
                 </TableCell>
+                <TableCell component="th" scope="row">
+                  {row.email}
+                </TableCell>
 
                 <TableCell align="right">
                   {row.id === activeUser.id ? (
                       <>
                         <CheckIcon sx={{mr: 2, cursor: 'pointer'}} onClick={deleteHandler}/>
                         <DoNotDisturbOnIcon sx={{cursor: 'pointer'}}
-                          onClick={() => setActiveUser({id: '-1', name: ''})}/>
+                          onClick={() => setActiveUser({id: '-1', name: '', email: ''})}/>
                       </>
-                      ) :
+                                        ) :
                       <>
-                        <ModeEditOutlineIcon
-                          onClick={() => {
-                            setActiveUser(row);
-                            setModalOpen(true);
-                          }}
-                          sx={{mr: 2, cursor: 'pointer'}}/>
-                        <DeleteIcon sx={{cursor: 'pointer'}} onClick={() => setActiveUser(row)}/>
+                        <Tooltip title="Редактировать пользоваиеля">
+                          <ModeEditOutlineIcon
+                            onClick={() => {
+                              setActiveUser(row);
+                              setModalOpen(true);
+                            }}
+                            sx={{mr: 1, cursor: 'pointer'}}/>
+                        </Tooltip>
+                        <Tooltip title="Изменить пароль">
+                          <LockIcon sx={{mr: 1, cursor: 'pointer'}}/>
+                        </Tooltip>
+                        <Tooltip title="Удалить пользователя">
+                          <DeleteIcon sx={{cursor: 'pointer'}} onClick={() => setActiveUser(row)}/>
+                        </Tooltip>
                       </>
                   }
                 </TableCell>
@@ -113,6 +124,7 @@ export const UsersContainer = connect(mapStateToProps)(() => {
         activeUser={activeUser}
         setActiveUser={setActiveUser}
         refetch={refetch}
+        // type={}
       />
     </Box>
   );

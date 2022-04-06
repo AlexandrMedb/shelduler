@@ -27,11 +27,6 @@ export const ROOM_DELETE = gql`
     }
 `;
 
-// {
-//     "input": {
-//     "name": "Room1"
-// }
-// }
 
 export const RESERVE_INSERT = gql`
     mutation reserve_insert(
@@ -62,25 +57,32 @@ export const RESERVE_DELETE = gql`
 
 
 export const USER_INSERT = gql`
-    mutation user_insert(
-        $input:UserInsertInput){
-        user_insert(input:$ input){
-            id
+    mutation create_user_action($input:CreateCustomUserInput) {
+        create_user_action(input:$input){
+            user{
+                id
+            }
         }
     }
 `;
 
 export const USER_DELETE = gql`
-    mutation user_delete($input:UserDeleteInput) {
-        user_delete(input:$input){
-            id
+    mutation delete_user_action($input:DeleteCustomUserInput) {
+        delete_user_action(input:$input){
+            user{
+                id
+            }
         }
     }
 `;
 
-// {
-//     "input": {
-//     "name": "vasya",
-//         "id":"user1"
-// }
-// }
+export const USER_UPDATE = gql`
+    mutation edit_user_action($input:EditCustomUserInput) {
+        edit_user_action(input:$input){
+            user{
+                id
+            }
+        }
+    }
+`;
+

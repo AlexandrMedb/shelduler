@@ -34,6 +34,7 @@ export const GET_USER = gql`
         user(filter:$filter) {
             id
             name
+            email
         }
     }
 `;
