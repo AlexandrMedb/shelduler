@@ -17,6 +17,7 @@ import {USER_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import {GET_USER} from '../graphQl/query';
 import {UserDialog} from '../components/userDialog';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const mapStateToProps = () => ({});
 
@@ -26,7 +27,7 @@ interface user {
     email: string,
 }
 
-export const UsersContainer = connect(mapStateToProps)(() => {
+export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () => void }) => {
   const {data: userGql = {}, refetch} = useQuery(GET_USER);
   const [users, setUsers] = useState<user[]>([]);
   const [activeUser, setActiveUser] = useState<user>({id: '-1', name: '', email: ''});
@@ -81,11 +82,15 @@ export const UsersContainer = connect(mapStateToProps)(() => {
               <TableCell>Пользователь</TableCell>
               <TableCell>Email</TableCell>
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
-                align="right"> <AddCircleIcon onClick={clickHandler}
-                  sx={{
-                    ml: 1,
-                    cursor: 'pointer',
-                  }}/>Действия</TableCell>
+                align="right">
+                <Tooltip title={'Выйти'}>
+                  <LogoutIcon onClick={logout} sx={{ml: 2}}/>
+                </Tooltip>
+                <Tooltip title={'Добавить пользователя'}>
+                  <AddCircleIcon onClick={clickHandler}
+                    sx={{ml: 2, cursor: 'pointer'}}/>
+                </Tooltip>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

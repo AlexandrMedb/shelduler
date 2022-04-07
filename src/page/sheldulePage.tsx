@@ -53,8 +53,8 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
         <Routes>
           {/* @ts-ignore*/}
           <Route path="/" element={<Schedule logout={logout}/>}/>
-          <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
-          <Route path="/users" element={<UsersContainer/>}/>
+          <Route path="/rooms" element={<RoomsContainer logout={logout} refetch={refetch}/>}/>
+          <Route path="/users" element={<UsersContainer logout={logout}/>}/>
         </Routes>
       </main>
       <div className={styles.mobileVersion}>

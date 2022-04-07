@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Box, Snackbar} from '@mui/material';
+import {Box, Snackbar, Tooltip} from '@mui/material';
 import {connect} from 'react-redux';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
 import {RootState} from '../store/store';
@@ -18,16 +18,18 @@ import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import {useMutation} from '@apollo/client';
 import {ROOM_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const mapStateToProps =({rooms}:RootState)=>({rooms});
 
 interface props{
     rooms:roomInterface[],
-  refetch:()=>any
+  refetch:()=>void
+    logout:()=>void
 
 }
 export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
-  const {refetch, rooms}=props;
+  const {refetch, rooms, logout}=props;
 
 
   const [openSnackbar, setOpenSnackbar] =useState(false);
@@ -69,9 +71,17 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
           <TableHead>
             <TableRow>
               <TableCell >Название комнаты</TableCell>
+
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
-                align="right"> <AddCircleIcon onClick={clickHandler}
-                  sx={{ml: 1, cursor: 'pointer'}}/>Действия</TableCell>
+                align="right">
+                <Tooltip title={'Выйти'}>
+                  <LogoutIcon onClick={logout} sx={{ml: 2}}/>
+                </Tooltip>
+                <Tooltip title={'Добавить комнату'}>
+                  <AddCircleIcon onClick={clickHandler}
+                    sx={{ml: 2, cursor: 'pointer'}}/>
+                </Tooltip>
+              </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -94,13 +104,17 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
 
                   ):
                       <>
-                        <ModeEditOutlineIcon
-                          onClick={()=> {
-                            setActiveRoom(row);
-                            setModalOpen(true);
-                          } }
-                          sx={{mr: 2, cursor: 'pointer'}}/>
-                        <DeleteIcon sx={{cursor: 'pointer'}} onClick={()=>setActiveRoom(row)}/>
+                        <Tooltip title={'Редактировать комнату'}>
+                          <ModeEditOutlineIcon
+                            onClick={()=> {
+                              setActiveRoom(row);
+                              setModalOpen(true);
+                            } }
+                            sx={{mr: 2, cursor: 'pointer'}}/>
+                        </Tooltip>
+                        <Tooltip title={'Удалить комнуту'}>
+                          <DeleteIcon sx={{cursor: 'pointer'}} onClick={()=>setActiveRoom(row)}/>
+                        </Tooltip>
                       </>
 
                   }
