@@ -28,6 +28,7 @@ import {FlexibleSpace} from '../components/flexibleSpace';
 import {Snackbar} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 
 import Button from '@mui/material/Button';
@@ -36,7 +37,7 @@ import Button from '@mui/material/Button';
 const mapStateToProps = ({currentRoom, rooms, user: {uid}}) => ({currentRoom, rooms, uid});
 
 
-export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => {
+export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, logout}) => {
   const [data, setData] = useState([]);
 
 
@@ -201,7 +202,17 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
             startDayHour={6}
 
           />
-          <ViewSwitcher/>
+          <ViewSwitcher
+            switcherComponent={(props)=>{
+              return (<div className={styles.viewSwitcher} >
+                <ViewSwitcher.Switcher {...props}/>
+                <LogoutIcon
+                  sx={{ml: 4}}
+                  onClick={logout}
+                />
+              </div>);
+            }}
+          />
           <MonthView/>
           <DayView/>
           <Appointments/>

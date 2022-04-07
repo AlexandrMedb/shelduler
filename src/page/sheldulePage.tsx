@@ -20,11 +20,12 @@ const mapStateToProps =({})=>({});
 interface props{
   setRooms:(data:roomInterface[])=>void
   setRoom:(data:roomInterface)=>void
+  logout:()=>void
 
 }
 
 export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:props)=>{
-  const {setRooms, setRoom}=props;
+  const {setRooms, setRoom, logout}=props;
 
   const {data: roomsGql = {}, refetch} = useQuery(GET_ROOMS);
   useEffect(() => {
@@ -44,12 +45,14 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
 
   const matchesAdmin = useMediaQuery('(min-width:768px)');
 
+
   return (
     <>
       <main className={styles.wrapper}>
         {matchesAdmin && <AdminPanel/>}
         <Routes>
-          <Route path="/" element={<Schedule/>}/>
+          {/* @ts-ignore*/}
+          <Route path="/" element={<Schedule logout={logout}/>}/>
           <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
           <Route path="/users" element={<UsersContainer/>}/>
         </Routes>

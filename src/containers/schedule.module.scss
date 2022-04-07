@@ -28,3 +28,16 @@ background: green !important;
   }
 
 }
+
+.viewSwitcher{
+  display: flex;
+  align-items: center;
+  & svg:nth-child(2){
+    &:hover{
+      color:blue;
+      cursor: pointer;
+    }
+
+  }
+
+}

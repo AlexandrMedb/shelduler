@@ -68,6 +68,10 @@ const App=connect(mapStateToProps, {setUid})((props:props)=>{
     // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
 
+  const signOutHandler=()=>{
+    firebase.auth().signOut().then(()=>setIsSignedIn(false)).catch(()=>setIsSignedIn(false));
+  };
+
   if (loading && !isSignedIn) {
     return (
       <Box sx={{
@@ -93,8 +97,6 @@ const App=connect(mapStateToProps, {setUid})((props:props)=>{
     uri: API_URL,
   });
 
-
-  console.log(firebase.auth().currentUser?.uid);
 
   const authLink = setContext(async (_, {headers}) => {
     const token = await firebase.auth()?.currentUser?.getIdToken();
@@ -130,7 +132,7 @@ const App=connect(mapStateToProps, {setUid})((props:props)=>{
   return (
     <ApolloProvider client={client}>
       <BrowserRouter>
-        <SchedulePage/>
+        <SchedulePage logout={signOutHandler}/>
       </BrowserRouter>
     </ApolloProvider>
 
