@@ -17,6 +17,7 @@ import {SchedulePage} from './page/sheldulePage';
 import {connect} from 'react-redux';
 import {RootState} from './store/store';
 import {setUid} from './reducer/userReducer';
+import {Box, CircularProgress} from '@mui/material';
 
 const API_URL = '/graphql';
 
@@ -51,12 +52,14 @@ interface props{
 const App=connect(mapStateToProps, {setUid})((props:props)=>{
   const {setUid}=props;
   const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
+  const [loading, setLoading] =useState(true);
 
 
   // Listen to the Firebase Auth state and set the local state.
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
       setIsSignedIn(!!user);
+      setLoading(false);
       if (user?.uid) {
         setUid(user?.uid);
       }
@@ -64,6 +67,17 @@ const App=connect(mapStateToProps, {setUid})((props:props)=>{
     return () => unregisterAuthObserver();
     // Make sure we un-register Firebase observers when the component unmounts.
   }, []);
+
+  if (loading && !isSignedIn) {
+    return (
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh'}}>
+        <CircularProgress />
+      </Box>);
+  }
 
   if (!isSignedIn) {
     return (
