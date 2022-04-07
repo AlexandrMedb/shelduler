@@ -78,8 +78,8 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
   const [snackbarText, setSnackbarText] =useState('Empty title');
 
   const handleSnackbarClose =()=>{
-    setOpenSnackbar(false);
     setSnackbarText('Please fill form');
+    setOpenSnackbar(false);
   };
 
   const handleSnackbarOpen=()=>{
