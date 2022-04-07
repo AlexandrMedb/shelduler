@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Box, Tooltip} from '@mui/material';
+import {Box, Snackbar, Tooltip} from '@mui/material';
 import {connect} from 'react-redux';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -17,7 +17,6 @@ import {USER_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import {GET_USER} from '../graphQl/query';
 import {UserDialog} from '../components/userDialog';
-import LockIcon from '@mui/icons-material/Lock';
 
 const mapStateToProps = () => ({});
 
@@ -43,6 +42,19 @@ export const UsersContainer = connect(mapStateToProps)(() => {
   const [modalOpen, setModalOpen] = useState(false);
 
 
+  const [openSnackbar, setOpenSnackbar] =useState(false);
+  const [snackbarText, setSnackbarText] =useState('Empty title');
+
+  const handleSnackbarClose =()=>{
+    setOpenSnackbar(false);
+    setSnackbarText('Please fill form');
+  };
+
+  const handleSnackbarOpen=()=>{
+    setSnackbarText('Error action');
+    setOpenSnackbar(true);
+  };
+
   const clickHandler = () => {
     setModalOpen(true);
   };
@@ -51,6 +63,8 @@ export const UsersContainer = connect(mapStateToProps)(() => {
     userDelete({variables: {input: {id: activeUser.id}}}).then(() => {
       refetch();
     }).catch((error) => {
+      setActiveUser({id: '-1', name: '', email: ''});
+      handleSnackbarOpen();
       console.log(error);
     });
   };
@@ -121,7 +135,18 @@ export const UsersContainer = connect(mapStateToProps)(() => {
         activeUser={activeUser}
         setActiveUser={setActiveUser}
         refetch={refetch}
+        handleSnackbarOpen={handleSnackbarOpen}
         // type={}
+      />
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarText}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
       />
     </Box>
   );

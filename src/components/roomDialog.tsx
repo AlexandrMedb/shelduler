@@ -14,11 +14,13 @@ interface props {
     open:boolean,
     activeRoom:roomInterface
     setOpen:Dispatch<SetStateAction<boolean>>,
-    refetch:()=>void
-    setActiveRoom:Dispatch<SetStateAction<roomInterface>>
+    refetch:()=>void,
+    setActiveRoom:Dispatch<SetStateAction<roomInterface>>,
+    handleSnackbarOpen:()=>void
 }
 
-export const RoomDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:props)=> {
+export const RoomDialog=(props:props)=> {
+  const {open, setOpen, activeRoom, refetch, setActiveRoom, handleSnackbarOpen}=props;
   const [createRoom] = useMutation(ROOM_INSERT);
   const [updateRoom] = useMutation(ROOM_UPDATE);
   const [value, setValue] =useState(activeRoom?.name);
@@ -42,6 +44,7 @@ export const RoomDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
           handleClose();
         }).catch((error)=>{
           console.log(error);
+          handleSnackbarOpen();
           handleClose();
         });
       } else {
@@ -50,6 +53,7 @@ export const RoomDialog=({open, setOpen, activeRoom, refetch, setActiveRoom}:pro
           handleClose();
         }).catch((error)=>{
           console.log(error);
+          handleSnackbarOpen();
           handleClose();
         });
       }

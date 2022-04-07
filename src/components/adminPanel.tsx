@@ -26,7 +26,7 @@ interface props {
 
 export const NavBarItem = ({text, icon, link}:props) => {
   return (
-    <Link to={link} style={{color: 'rgb(68,68,68)', textDecoration: 'none'}}>
+    <Link to={link} style={{color: 'rgb(0,0,0)', textDecoration: 'none'}}>
       <ListItem sx={{p: 1}}>
         {icon}
         <ListItemText sx={{ml: 2}}

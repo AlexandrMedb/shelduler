@@ -6,7 +6,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import {Box} from '@mui/material';
+import {Box, Snackbar} from '@mui/material';
 import {connect} from 'react-redux';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
 import {RootState} from '../store/store';
@@ -15,7 +15,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {RoomDialog} from '../components/roomDialog';
 import CheckIcon from '@mui/icons-material/Check';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
-import {useMutation, useQuery} from '@apollo/client';
+import {useMutation} from '@apollo/client';
 import {ROOM_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 
@@ -30,6 +30,19 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
   const {refetch, rooms}=props;
 
 
+  const [openSnackbar, setOpenSnackbar] =useState(false);
+  const [snackbarText, setSnackbarText] =useState('Empty title');
+
+  const handleSnackbarClose =()=>{
+    setOpenSnackbar(false);
+    setSnackbarText('Please fill form');
+  };
+
+  const handleSnackbarOpen=()=>{
+    setSnackbarText('Error action');
+    setOpenSnackbar(true);
+  };
+
   const [roomDelete] = useMutation(ROOM_DELETE);
   const [modalOpen, setModalOpen] =useState(false);
   const [activeRoom, setActiveRoom] =useState<roomInterface>({id: -1, name: '', color: '#3787d7'});
@@ -43,9 +56,12 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
     roomDelete({variables: {input: {id: activeRoom.id}}}).then(()=>{
       refetch();
     }).catch((error)=>{
+      handleSnackbarOpen();
+      setActiveRoom({id: -1, name: '', color: '#3787d7'});
       console.log(error);
     });
   };
+
 
   return (
     <Box sx={{width: '100%',
@@ -98,11 +114,24 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
           </TableBody>
         </Table>
       </TableContainer>
-      <RoomDialog open={modalOpen}
+      <RoomDialog
+        open={modalOpen}
         setOpen={setModalOpen}
         activeRoom={activeRoom}
         setActiveRoom={setActiveRoom}
-        refetch={refetch} />
+        refetch={refetch}
+        handleSnackbarOpen={handleSnackbarOpen}
+      />
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={3000}
+        onClose={handleSnackbarClose}
+        message={snackbarText}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'right',
+        }}
+      />
     </Box>
   );
 });

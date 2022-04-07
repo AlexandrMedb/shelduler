@@ -33,10 +33,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import Button from '@mui/material/Button';
 
 
-const mapStateToProps = ({currentRoom, rooms}) => ({currentRoom, rooms});
+const mapStateToProps = ({currentRoom, rooms, user: {uid}}) => ({currentRoom, rooms, uid});
 
 
-export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
+export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => {
   const [data, setData] = useState([]);
 
 
@@ -73,6 +73,20 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
 
   const [curData, setCurData] = useState(false);
 
+
+  const [openSnackbar, setOpenSnackbar] =useState(false);
+  const [snackbarText, setSnackbarText] =useState('Empty title');
+
+  const handleSnackbarClose =()=>{
+    setOpenSnackbar(false);
+    setSnackbarText('Please fill form');
+  };
+
+  const handleSnackbarOpen=()=>{
+    setSnackbarText('Error action');
+    setOpenSnackbar(true);
+  };
+
   const onCommitChanges = useCallback(({added, changed, deleted}) => {
     if (added) {
       const input = appointmentToReserve(
@@ -80,10 +94,11 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
             data: added,
             added: added.room,
             room: currentRoom,
-            user: {id: 'user1', name: '2'},
+            user: {id: uid, name: ''},
           });
       createReserve({variables: {input}}).then(() => refetch()).catch((error) => {
         console.log(error);
+        handleSnackbarOpen();
       });
     }
     if (changed) {
@@ -106,6 +121,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
       });
 
       updateReserve({variables: {input}}).then(() => refetch()).catch((error) => {
+        handleSnackbarOpen();
         console.log(error);
       });
     }
@@ -114,6 +130,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
     if (deleted !== undefined) {
       deleteReserve({variables: {input: {id: deleted}}}).then(() => refetch()).catch((error) => {
         console.log(error);
+        handleSnackbarOpen();
       });
     }
   }, [currentRoom]);
@@ -145,13 +162,6 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
   const save = useRef(null);
   const cancel = useRef(null);
 
-  const [openSnackbar, setOpenSnackbar] =useState(false);
-  const [snackbarText, setSnackbarText] =useState('Empty title');
-
-  const handleSnackbarClose =()=>{
-    setOpenSnackbar(false);
-    setSnackbarText('Empty form');
-  };
 
   return (
     <>
@@ -203,7 +213,6 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
             onCommitChanges={onCommitChanges}
 
             onAppointmentChangesChange={(props) => {
-              console.log(props);
               if (!curData && props.title ) {
                 setCurData(true);
               }
@@ -296,8 +305,6 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms}) => {
         }}
       />
     </>
-
-
   );
 });
 

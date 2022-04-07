@@ -14,6 +14,9 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebaseui/dist/firebaseui.css';
 import {SchedulePage} from './page/sheldulePage';
+import {connect} from 'react-redux';
+import {RootState} from './store/store';
+import {setUid} from './reducer/userReducer';
 
 const API_URL = '/graphql';
 
@@ -39,7 +42,14 @@ const uiConfig = {
 };
 
 
-const App=() =>{
+const mapStateToProps =({}:RootState)=>({});
+
+interface props{
+  setUid:(data:string)=>void
+}
+
+const App=connect(mapStateToProps, {setUid})((props:props)=>{
+  const {setUid}=props;
   const [isSignedIn, setIsSignedIn] = useState(false); // Local signed-in state.
 
 
@@ -47,6 +57,9 @@ const App=() =>{
   useEffect(() => {
     const unregisterAuthObserver = firebase.auth().onAuthStateChanged((user) => {
       setIsSignedIn(!!user);
+      if (user?.uid) {
+        setUid(user?.uid);
+      }
     });
     return () => unregisterAuthObserver();
     // Make sure we un-register Firebase observers when the component unmounts.
@@ -67,7 +80,7 @@ const App=() =>{
   });
 
 
-  // console.log(firebase.auth()?.currentUser);
+  console.log(firebase.auth().currentUser?.uid);
 
   const authLink = setContext(async (_, {headers}) => {
     const token = await firebase.auth()?.currentUser?.getIdToken();
@@ -106,12 +119,8 @@ const App=() =>{
         <SchedulePage/>
       </BrowserRouter>
     </ApolloProvider>
-    // <>
-    //   <CustomDemo/>
-    //   <Demo/>
-    // </>
 
   );
-};
+});
 
 export default App;
