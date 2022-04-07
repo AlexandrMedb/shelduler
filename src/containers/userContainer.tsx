@@ -47,7 +47,6 @@ export const UsersContainer = connect(mapStateToProps)(() => {
 
   const handleSnackbarClose =()=>{
     setOpenSnackbar(false);
-    setSnackbarText('Please fill form');
   };
 
   const handleSnackbarOpen=()=>{

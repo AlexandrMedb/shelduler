@@ -31,15 +31,13 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
 
 
   const [openSnackbar, setOpenSnackbar] =useState(false);
-  const [snackbarText, setSnackbarText] =useState('Empty title');
+  const [snackbarText, setSnackbarText] =useState('Error action');
 
   const handleSnackbarClose =()=>{
     setOpenSnackbar(false);
-    setSnackbarText('Please fill form');
   };
 
   const handleSnackbarOpen=()=>{
-    setSnackbarText('Error action');
     setOpenSnackbar(true);
   };
 
