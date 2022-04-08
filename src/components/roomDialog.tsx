@@ -63,7 +63,7 @@ export const RoomDialog=(props:props)=> {
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>
-        {activeRoom?.id!==-1?'Редактировать':'Создать комнату'}
+        {activeRoom?.id!==-1?'Edit room':'Add room'}
 
       </DialogTitle>
       <DialogContent sx={{display: 'flex'}}>
@@ -71,7 +71,7 @@ export const RoomDialog=(props:props)=> {
           autoFocus
           margin="dense"
           id="name"
-          placeholder="Название комнаты"
+          placeholder="Room name"
           type="text"
           fullWidth
           variant="standard"
@@ -93,8 +93,8 @@ export const RoomDialog=(props:props)=> {
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Отмена</Button>
-        <Button onClick={handleSubmit}>{activeRoom.id!=-1?'Сохранить': 'Создать'}</Button>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleSubmit}>{activeRoom.id!=-1?'Save': 'Create'}</Button>
       </DialogActions>
     </Dialog>
   );

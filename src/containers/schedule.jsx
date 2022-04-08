@@ -25,7 +25,7 @@ import {RESERVE_DELETE, RESERVE_INSERT, RESERVE_UPDATE} from '../graphQl/mutatio
 import {appointmentToReserve, reservesToAppointments} from '../utilits/dataHandlers';
 import {GET_RESERVE} from '../graphQl/query';
 import {FlexibleSpace} from '../components/flexibleSpace';
-import {Snackbar} from '@mui/material';
+import {Snackbar, Tooltip} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LogoutIcon from '@mui/icons-material/Logout';
@@ -206,10 +206,13 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, logo
             switcherComponent={(props)=>{
               return (<div className={styles.viewSwitcher} >
                 <ViewSwitcher.Switcher {...props}/>
-                <LogoutIcon
-                  sx={{ml: 4}}
-                  onClick={logout}
-                />
+                <Tooltip title={'Logout'}>
+                  <LogoutIcon
+                    sx={{ml: 4}}
+                    onClick={logout}
+                  />
+                </Tooltip>
+
               </div>);
             }}
           />

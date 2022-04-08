@@ -84,7 +84,7 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
               <TableCell>Role</TableCell>
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right">
-                <Tooltip title={''}>
+                <Tooltip title={'Logout'}>
                   <LogoutIcon onClick={logout} sx={{ml: 2}}/>
                 </Tooltip>
                 <Tooltip title={'Add user'}>

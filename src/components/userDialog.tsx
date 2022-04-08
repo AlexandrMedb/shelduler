@@ -209,7 +209,7 @@ export const UserDialog = (props: props) => {
     return (
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>
-          {activeUser?.id !== '-1' ? 'Редактировать' : 'Создать пользователя'}
+          {activeUser?.id !== '-1' ? 'Edit user' : 'Add user'}
 
         </DialogTitle>
         <DialogContent>
@@ -219,7 +219,7 @@ export const UserDialog = (props: props) => {
             onBlur={nameValidate}
             required
             autoFocus
-            label={'Имя'}
+            label={'Name'}
             margin="dense"
             id="name"
             // placeholder=""
@@ -251,7 +251,7 @@ export const UserDialog = (props: props) => {
             helperText={formData.password.error}
             onBlur={passwordValidate}
             required={activeUser.id === '-1'}
-            label={activeUser.id === '-1' ? 'Пароль' : 'Сбросить пароль'}
+            label={activeUser.id === '-1' ? 'Password' : 'Reset password'}
             margin="dense"
             type="password"
             inputProps={{
@@ -274,7 +274,7 @@ export const UserDialog = (props: props) => {
               helperText={formData.repeatPassword.error}
               onBlur={repeatPasswordValidate}
               required={activeUser.id === '-1' || !!formData.password.value}
-              label={'Повторите пароль'}
+              label={'Repeat password'}
               margin="dense"
               type="password"
               fullWidth
@@ -290,13 +290,13 @@ export const UserDialog = (props: props) => {
           <Button sx={{background: 'rgba(0,0,0,0.50)'}}
             variant={'contained'}
             onClick={handleClose}>
-                    Отмена
+                    Cancel
           </Button>
           <Button
             disabled={disableSubmit()}
             variant={'contained'}
             onClick={handleSubmit}>
-            {activeUser.id != '-1' ? 'Сохранить' : 'Создать'}
+            {activeUser.id != '-1' ? 'Save' : 'Create'}
           </Button>
         </DialogActions>
       </Dialog>
