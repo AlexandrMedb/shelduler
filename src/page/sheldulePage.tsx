@@ -8,7 +8,7 @@ import {setRoom} from 'reducer/currentRoomReducer';
 import AdminPanel from '../components/adminPanel';
 import {Route, Routes} from 'react-router-dom';
 import {RoomsContainer} from '../containers/roomsContainer';
-import {useMediaQuery} from '@mui/material';
+import {Box, CircularProgress, useMediaQuery} from '@mui/material';
 import {Schedule} from '../containers/schedule';
 
 import styles from './sheldulePage.module.scss';
@@ -45,7 +45,7 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
 
 
   const [isAdmin, setISAdmin]=useState(false);
-  const {data: userGql = {}} = useQuery(GET_USER, {variables:
+  const {data: userGql = {}, loading} = useQuery(GET_USER, {variables:
         {filter: {id: {eq: 'yoJyUrmlTbMikyVrrAFtJ14tYPc2'}}},
   });
   useEffect(() => {
@@ -56,6 +56,18 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
 
 
   const matchesAdmin = useMediaQuery('(min-width:768px)');
+
+
+  if (loading) {
+    return (
+      <Box sx={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh'}}>
+        <CircularProgress />
+      </Box>);
+  }
 
 
   return (
