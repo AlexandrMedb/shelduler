@@ -89,7 +89,7 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
           </Typography>
 
           <Tooltip title={'Logout'}>
-            <LogoutIcon onClick={logout} sx={{ml: 2}}/>
+            <LogoutIcon onClick={logout} sx={{ml: 2, cursor: 'pointer'}}/>
           </Tooltip>
         </header>
         <div className={styles.container}>
