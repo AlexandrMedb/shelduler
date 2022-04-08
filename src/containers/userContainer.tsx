@@ -79,14 +79,15 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
         <Table sx={{minWidth: 650}} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Пользователь</TableCell>
+              <TableCell>User</TableCell>
               <TableCell>Email</TableCell>
+              <TableCell>Role</TableCell>
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right">
-                <Tooltip title={'Выйти'}>
+                <Tooltip title={''}>
                   <LogoutIcon onClick={logout} sx={{ml: 2}}/>
                 </Tooltip>
-                <Tooltip title={'Добавить пользователя'}>
+                <Tooltip title={'Add user'}>
                   <AddCircleIcon onClick={clickHandler}
                     sx={{ml: 2, cursor: 'pointer'}}/>
                 </Tooltip>
@@ -105,6 +106,7 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
                 <TableCell component="th" scope="row">
                   {row.email}
                 </TableCell>
+                <TableCell>Role</TableCell>
 
                 <TableCell align="right">
                   {row.id === activeUser.id ? (
@@ -115,7 +117,7 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
                       </>
                                         ) :
                       <>
-                        <Tooltip title="Редактировать пользоваиеля">
+                        <Tooltip title="Edit user">
                           <ModeEditOutlineIcon
                             onClick={() => {
                               setActiveUser(row);
@@ -123,7 +125,7 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
                             }}
                             sx={{mr: 1, cursor: 'pointer'}}/>
                         </Tooltip>
-                        <Tooltip title="Удалить пользователя">
+                        <Tooltip title="Delete user">
                           <DeleteIcon sx={{cursor: 'pointer'}} onClick={() => setActiveUser(row)}/>
                         </Tooltip>
                       </>

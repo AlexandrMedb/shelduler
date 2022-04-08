@@ -9,11 +9,11 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 
 export default function AdminPanel() {
   return (
-    <List sx={{width: 190, borderRight: '1px solid lightgray', minHeight: '95vh',
+    <List sx={{width: 200, borderRight: '1px solid lightgray', minHeight: '95vh',
       boxSizing: 'borderBox'}}>
-      <NavBarItem icon={<CalendarMonthIcon/>} link={'/'} text={'Календарь'}/>
-      <NavBarItem icon={<RoomPreferencesIcon/>} link={'/rooms'} text={'Комнаты'}/>
-      <NavBarItem icon={<GroupIcon/>} link={'/users'} text={'Пользователи'}/>
+      <NavBarItem icon={<CalendarMonthIcon/>} link={'/'} text={'schedule'}/>
+      <NavBarItem icon={<RoomPreferencesIcon/>} link={'/rooms'} text={'rooms'}/>
+      <NavBarItem icon={<GroupIcon/>} link={'/users'} text={'users'}/>
     </List>
   );
 }
@@ -26,10 +26,10 @@ interface props {
 
 export const NavBarItem = ({text, icon, link}:props) => {
   return (
-    <Link to={link} style={{color: 'rgb(0,0,0)', textDecoration: 'none'}}>
+    <Link to={link} style={{color: 'rgba(0,0,0,0.72)', textDecoration: 'none'}}>
       <ListItem sx={{p: 1}}>
         {icon}
-        <ListItemText sx={{ml: 2}}
+        <ListItemText sx={{ml: 2, textTransform: 'uppercase'}}
           primary={text}
         />
       </ListItem>

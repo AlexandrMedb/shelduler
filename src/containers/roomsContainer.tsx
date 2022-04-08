@@ -70,14 +70,14 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
         <Table sx={{minWidth: 650}} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell >Название комнаты</TableCell>
+              <TableCell >Room</TableCell>
 
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right">
-                <Tooltip title={'Выйти'}>
+                <Tooltip title={'Logout'}>
                   <LogoutIcon onClick={logout} sx={{ml: 2}}/>
                 </Tooltip>
-                <Tooltip title={'Добавить комнату'}>
+                <Tooltip title={'Add room'}>
                   <AddCircleIcon onClick={clickHandler}
                     sx={{ml: 2, cursor: 'pointer'}}/>
                 </Tooltip>
@@ -104,7 +104,7 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
 
                   ):
                       <>
-                        <Tooltip title={'Редактировать комнату'}>
+                        <Tooltip title={'Edit room'}>
                           <ModeEditOutlineIcon
                             onClick={()=> {
                               setActiveRoom(row);
@@ -112,7 +112,7 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
                             } }
                             sx={{mr: 2, cursor: 'pointer'}}/>
                         </Tooltip>
-                        <Tooltip title={'Удалить комнуту'}>
+                        <Tooltip title={'Delete room'}>
                           <DeleteIcon sx={{cursor: 'pointer'}} onClick={()=>setActiveRoom(row)}/>
                         </Tooltip>
                       </>
