@@ -1,6 +1,6 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useQuery} from '@apollo/client';
-import {GET_ROOMS} from '../graphQl/query';
+import {GET_ROOMS, GET_USER} from '../graphQl/query';
 import {connect} from 'react-redux';
 import {setRooms} from 'reducer/roomsReducer';
 import {roomInterface} from '../interfaces/shelduleInterfaces';
@@ -43,18 +43,34 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
     }
   }, [roomsGql]);
 
+
+  const [isAdmin, setISAdmin]=useState(false);
+  const {data: userGql = {}} = useQuery(GET_USER, {variables:
+        {filter: {id: {eq: 'yoJyUrmlTbMikyVrrAFtJ14tYPc2'}}},
+  });
+  useEffect(() => {
+    if (userGql?.user) {
+      setISAdmin(!!userGql?.user[0].is_admin);
+    }
+  }, [userGql]);
+
+
   const matchesAdmin = useMediaQuery('(min-width:768px)');
 
 
   return (
     <>
       <main className={styles.wrapper}>
-        {matchesAdmin && <AdminPanel/>}
+        {matchesAdmin && isAdmin && <AdminPanel/>}
         <Routes>
           {/* @ts-ignore*/}
           <Route path="/" element={<Schedule logout={logout}/>}/>
-          <Route path="/rooms" element={<RoomsContainer logout={logout} refetch={refetch}/>}/>
-          <Route path="/users" element={<UsersContainer logout={logout}/>}/>
+          {isAdmin && <>
+            <Route path="/rooms" element={<RoomsContainer logout={logout} refetch={refetch}/>}/>
+            <Route path="/users" element={<UsersContainer logout={logout}/>}/>
+          </>}
+          {/* @ts-ignore*/}
+          <Route path="*" element={<Schedule logout={logout}/>}/>
         </Routes>
       </main>
       <div className={styles.mobileVersion}>

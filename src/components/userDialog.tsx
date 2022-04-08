@@ -8,13 +8,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import {Dispatch, SetStateAction, useEffect, useState} from 'react';
 import {useMutation} from '@apollo/client';
 import {USER_INSERT, USER_UPDATE} from '../graphQl/mutation';
+import {FormControlLabel, Switch} from '@mui/material';
 
 interface props {
     open: boolean,
-    activeUser: { id: string, name: string, email: string }
+    activeUser: { id: string, name: string, email: string, is_admin:boolean }
     setOpen: Dispatch<SetStateAction<boolean>>,
     refetch: () => void
-    setActiveUser: Dispatch<SetStateAction<{ id: string, name: string, email: string }>>
+    setActiveUser: Dispatch<SetStateAction<
+        { id: string, name: string, email: string, is_admin:boolean}>>
     handleSnackbarOpen: () => void
 }
 
@@ -48,12 +50,16 @@ export const UserDialog = (props: props) => {
         value: '',
         error: '',
       },
+      is_admin: {
+        value: '',
+        error: '',
+      },
     });
 
 
     const handleClose = () => {
       setOpen(false);
-      setActiveUser({id: '-1', name: '', email: ''});
+      setActiveUser({id: '-1', name: '', email: '', is_admin: false});
     };
 
     useEffect(() => {
@@ -62,6 +68,7 @@ export const UserDialog = (props: props) => {
           ...formData,
           name: {...formData.name, value: activeUser.name},
           email: {...formData.email, value: activeUser.email},
+          is_admin: {...formData.is_admin, value: activeUser.is_admin? 'Admin':''},
         });
       } else {
         setFormData(
@@ -79,6 +86,10 @@ export const UserDialog = (props: props) => {
                 error: '',
               },
               repeatPassword: {
+                value: '',
+                error: '',
+              },
+              is_admin: {
                 value: '',
                 error: '',
               },
@@ -164,6 +175,7 @@ export const UserDialog = (props: props) => {
                 password: formData.password.value,
                 email: formData.email.value,
                 name: formData.name.value,
+                is_admin: !!formData.is_admin.value,
               },
             },
           }).then((res) => {
@@ -182,10 +194,17 @@ export const UserDialog = (props: props) => {
           passwordValidate();
           repeatPasswordValidate();
           if (!disableSubmit()) {
-            const input: { id: string, email: string, name: string, password?: string } = {
+            const input: {
+              id: string,
+              email: string,
+              name: string,
+              password?: string,
+              is_admin:boolean
+            } = {
               id: activeUser.id,
               email: formData.email.value,
               name: formData.name.value,
+              is_admin: !!formData.is_admin.value,
             };
             if (formData.password.value) {
               input.password = formData.password.value;
@@ -246,12 +265,22 @@ export const UserDialog = (props: props) => {
               updateFormValue({value: e.target.value, field: 'email'});
             }}
           />
+          <FormControlLabel sx={{pt: 2}} control={
+            <Switch
+              checked={!!formData.is_admin.value}
+              onChange={(event: React.ChangeEvent<HTMLInputElement>)=> {
+                if (event.target.checked) {
+                  updateFormValue({value: 'admin', field: 'is_admin'});
+                } else updateFormValue({value: '', field: 'is_admin'});
+              }}
+            />
+          } label="admin" />
           <TextField
-            error={!!formData.password.error}
-            helperText={formData.password.error}
+            error={!!formData?.password?.error}
+            helperText={formData?.password?.error}
             onBlur={passwordValidate}
-            required={activeUser.id === '-1'}
-            label={activeUser.id === '-1' ? 'Password' : 'Reset password'}
+            required={activeUser?.id === '-1'}
+            label={activeUser?.id === '-1' ? 'Password' : 'Reset password'}
             margin="dense"
             type="password"
             inputProps={{
@@ -262,7 +291,7 @@ export const UserDialog = (props: props) => {
             }}
             fullWidth
             variant="standard"
-            value={formData.password.value}
+            value={formData?.password?.value}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               updateFormValue({value: e.target.value, field: 'password'});
             }}

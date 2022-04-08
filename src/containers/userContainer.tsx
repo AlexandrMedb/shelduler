@@ -25,12 +25,15 @@ interface user {
     id: string,
     name: string,
     email: string,
+  is_admin:boolean,
 }
 
 export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () => void }) => {
   const {data: userGql = {}, refetch} = useQuery(GET_USER);
   const [users, setUsers] = useState<user[]>([]);
-  const [activeUser, setActiveUser] = useState<user>({id: '-1', name: '', email: ''});
+  const [activeUser, setActiveUser] = useState<user>(
+      {id: '-1', name: '', email: '', is_admin: false},
+  );
   // const [formType, setFormType]=useState<''|'password'|''>('')
 
   useEffect(() => {
@@ -63,7 +66,7 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
     userDelete({variables: {input: {id: activeUser.id}}}).then(() => {
       refetch();
     }).catch((error) => {
-      setActiveUser({id: '-1', name: '', email: ''});
+      setActiveUser({id: '-1', name: '', email: '', is_admin: false});
       handleSnackbarOpen();
       console.log(error);
     });
@@ -106,14 +109,16 @@ export const UsersContainer = connect(mapStateToProps)(({logout}: { logout: () =
                 <TableCell component="th" scope="row">
                   {row.email}
                 </TableCell>
-                <TableCell>Role</TableCell>
+                <TableCell>{row.is_admin?'Admin':'User'}</TableCell>
 
                 <TableCell align="right">
                   {row.id === activeUser.id ? (
                       <>
                         <CheckIcon sx={{mr: 2, cursor: 'pointer'}} onClick={deleteHandler}/>
                         <DoNotDisturbOnIcon sx={{cursor: 'pointer'}}
-                          onClick={() => setActiveUser({id: '-1', name: '', email: ''})}/>
+                          onClick={() => setActiveUser(
+                              {id: '-1', name: '', email: '', is_admin: false},
+                          )}/>
                       </>
                                         ) :
                       <>

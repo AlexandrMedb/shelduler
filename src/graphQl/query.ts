@@ -35,8 +35,7 @@ export const GET_USER = gql`
             id
             name
             email
+            is_admin
         }
     }
 `;
-
-
