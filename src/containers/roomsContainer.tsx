@@ -18,18 +18,18 @@ import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import {useMutation} from '@apollo/client';
 import {ROOM_DELETE} from '../graphQl/mutation';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import LogoutIcon from '@mui/icons-material/Logout';
+
 
 const mapStateToProps =({rooms}:RootState)=>({rooms});
 
 interface props{
     rooms:roomInterface[],
   refetch:()=>void
-    logout:()=>void
+
 
 }
 export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
-  const {refetch, rooms, logout}=props;
+  const {refetch, rooms}=props;
 
 
   const [openSnackbar, setOpenSnackbar] =useState(false);
@@ -74,9 +74,7 @@ export const RoomsContainer= connect(mapStateToProps )((props:props)=>{
 
               <TableCell sx={{display: 'flex', alignItems: 'center'}}
                 align="right">
-                <Tooltip title={'Logout'}>
-                  <LogoutIcon onClick={logout} sx={{ml: 2}}/>
-                </Tooltip>
+
                 <Tooltip title={'Add room'}>
                   <AddCircleIcon onClick={clickHandler}
                     sx={{ml: 2, cursor: 'pointer'}}/>

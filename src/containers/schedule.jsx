@@ -37,7 +37,7 @@ import Button from '@mui/material/Button';
 const mapStateToProps = ({currentRoom, rooms, user: {uid}}) => ({currentRoom, rooms, uid});
 
 
-export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, logout}) => {
+export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => {
   const [data, setData] = useState([]);
 
 
@@ -202,20 +202,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, logo
             startDayHour={6}
 
           />
-          <ViewSwitcher
-            switcherComponent={(props)=>{
-              return (<div className={styles.viewSwitcher} >
-                <ViewSwitcher.Switcher {...props}/>
-                <Tooltip title={'Logout'}>
-                  <LogoutIcon
-                    sx={{ml: 4}}
-                    onClick={logout}
-                  />
-                </Tooltip>
-
-              </div>);
-            }}
-          />
+          <ViewSwitcher/>
           <MonthView/>
           <DayView/>
           <Appointments/>

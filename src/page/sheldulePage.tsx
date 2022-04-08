@@ -8,24 +8,28 @@ import {setRoom} from 'reducer/currentRoomReducer';
 import AdminPanel from '../components/adminPanel';
 import {Route, Routes} from 'react-router-dom';
 import {RoomsContainer} from '../containers/roomsContainer';
-import {Box, CircularProgress, useMediaQuery} from '@mui/material';
+import {Box, CircularProgress, Tooltip, useMediaQuery} from '@mui/material';
 import {Schedule} from '../containers/schedule';
 
 import styles from './sheldulePage.module.scss';
 import {UsersContainer} from '../containers/userContainer';
+import {RootState} from '../store/store';
+import LogoutIcon from '@mui/icons-material/Logout';
+import Typography from '@mui/material/Typography';
 
 
-const mapStateToProps =({})=>({});
+const mapStateToProps =({user: {uid}}:RootState)=>({uid});
 
 interface props{
   setRooms:(data:roomInterface[])=>void
   setRoom:(data:roomInterface)=>void
   logout:()=>void
+  uid:string
 
 }
 
 export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:props)=>{
-  const {setRooms, setRoom, logout}=props;
+  const {setRooms, setRoom, logout, uid}=props;
 
   const {data: roomsGql = {}, refetch} = useQuery(GET_ROOMS);
   useEffect(() => {
@@ -45,12 +49,17 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
 
 
   const [isAdmin, setISAdmin]=useState(false);
-  const {data: userGql = {}, loading} = useQuery(GET_USER, {variables:
-        {filter: {id: {eq: 'yoJyUrmlTbMikyVrrAFtJ14tYPc2'}}},
-  });
+  const [user, setUser]=useState({name: ''});
+
+  const input= uid?{filter: {id: {eq: uid}}}:{};
+  const {data: userGql = {}, loading} = useQuery(GET_USER, {variables: input});
   useEffect(() => {
     if (userGql?.user) {
-      setISAdmin(!!userGql?.user[0].is_admin);
+      if (userGql?.user[0]) {
+        console.log(userGql?.user[0]);
+        setUser(userGql?.user[0]);
+        setISAdmin(!!userGql?.user[0]?.is_admin);
+      }
     }
   }, [userGql]);
 
@@ -72,18 +81,31 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
 
   return (
     <>
+
       <main className={styles.wrapper}>
-        {matchesAdmin && isAdmin && <AdminPanel/>}
-        <Routes>
-          {/* @ts-ignore*/}
-          <Route path="/" element={<Schedule logout={logout}/>}/>
-          {isAdmin && <>
-            <Route path="/rooms" element={<RoomsContainer logout={logout} refetch={refetch}/>}/>
-            <Route path="/users" element={<UsersContainer logout={logout}/>}/>
-          </>}
-          {/* @ts-ignore*/}
-          <Route path="*" element={<Schedule logout={logout}/>}/>
-        </Routes>
+        <header>
+          <Typography>
+            {user.name}
+          </Typography>
+
+          <Tooltip title={'Logout'}>
+            <LogoutIcon onClick={logout} sx={{ml: 2}}/>
+          </Tooltip>
+        </header>
+        <div className={styles.container}>
+          {matchesAdmin && isAdmin && <AdminPanel/>}
+          <Routes>
+            {/* @ts-ignore*/}
+            <Route path="/" element={<Schedule />}/>
+            {isAdmin && <>
+              <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
+              <Route path="/users" element={<UsersContainer />}/>
+            </>}
+            {/* @ts-ignore*/}
+            <Route path="*" element={<Schedule logout={logout}/>}/>
+          </Routes>
+        </div>
+
       </main>
       <div className={styles.mobileVersion}>
         <h1>Мобильная версия пока не поддерживается</h1>
