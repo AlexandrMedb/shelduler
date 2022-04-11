@@ -37,7 +37,7 @@ const uiConfig = {
   signInOptions: [
     {
       provider: firebase.auth.EmailAuthProvider.PROVIDER_ID,
-      // disableSignUp: {status: true},
+      disableSignUp: {status: true},
     },
   ],
 };
