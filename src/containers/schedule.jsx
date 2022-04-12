@@ -36,7 +36,7 @@ import Button from '@mui/material/Button';
 const mapStateToProps = ({currentRoom, rooms, user: {uid}}) => ({currentRoom, rooms, uid});
 
 
-export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => {
+export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAdmin}) => {
   const [data, setData] = useState([]);
 
 
@@ -120,8 +120,13 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
       });
 
       updateReserve({variables: {input}}).then(() => refetch()).catch((error) => {
+        // eslint-disable-next-line max-len
+        if (error.graphQLErrors[0].message==='ERROR: new row violates row-level security policy for table "reserves" (SQLSTATE 42501)') {
+          setSnackbarText(' Access Denied');
+          setOpenSnackbar(true);
+          return;
+        }
         handleSnackbarOpen();
-        console.log(error);
       });
     }
 
@@ -253,8 +258,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
             showOpenButton
             showDeleteButton={true}
             layoutComponent={(props)=>{
-              console.log(props);
-              const [editable, setEditable]=useState(false);
+              const [editable, setEditable]=useState(true);
               return <AppointmentTooltip.Layout
                 {...props}
                 commandButtonComponent={(pr)=>{
@@ -266,15 +270,11 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
                   ;
                 }}
                 contentComponent={(pr)=> {
-                  setEditable(pr?.appointmentData?.creator===uid);
+                  if (!isAdmin)setEditable(pr?.appointmentData?.creator===uid);
                   return <AppointmentTooltip.Content {...pr}/>;
                 }}
               />;
             }}
-            // commandButtonComponent={(props)=>{
-            //   console.log(props);
-            //   return <div></div>;
-            // }}
           />
           <AppointmentForm
             commandLayoutComponent={

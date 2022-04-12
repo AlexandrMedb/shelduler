@@ -96,7 +96,7 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
           {matchesAdmin && isAdmin && <AdminPanel/>}
           <Routes>
             {/* @ts-ignore*/}
-            <Route path="/" element={<Schedule />}/>
+            <Route path="/" isAdmin={isAdmin} element={<Schedule />}/>
             {isAdmin && <>
               <Route path="/rooms" element={<RoomsContainer refetch={refetch}/>}/>
               <Route path="/users" element={<UsersContainer />}/>
