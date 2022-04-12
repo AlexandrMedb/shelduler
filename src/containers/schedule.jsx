@@ -150,7 +150,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
     <MonthView.TimeTableCell
       {...restProps}
       onClick={()=>{
-        setSnackbarText('Switch to week view');
+        setSnackbarText('To book a conference room, switch to week view or day view');
         setOpenSnackbar(true);
       }}
     >
