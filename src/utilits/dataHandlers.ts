@@ -13,6 +13,7 @@ export const reservesToAppointments = (data: reserveInterface[]) => (
     id: el.id,
     location: el.room.name,
     room: el.room.id,
+    creator: el.creator.id,
   })));
 
 

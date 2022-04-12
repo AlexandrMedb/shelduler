@@ -28,7 +28,6 @@ import {FlexibleSpace} from '../components/flexibleSpace';
 import {Snackbar, Tooltip} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
-import LogoutIcon from '@mui/icons-material/Logout';
 
 
 import Button from '@mui/material/Button';
@@ -253,6 +252,29 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
           <AppointmentTooltip
             showOpenButton
             showDeleteButton={true}
+            layoutComponent={(props)=>{
+              console.log(props);
+              const [editable, setEditable]=useState(false);
+              return <AppointmentTooltip.Layout
+                {...props}
+                commandButtonComponent={(pr)=>{
+                  return (
+                    <AppointmentTooltip.CommandButton
+                      {...pr}
+                      style={{display: editable? '':'none'}}
+                    />)
+                  ;
+                }}
+                contentComponent={(pr)=> {
+                  setEditable(pr?.appointmentData?.creator===uid);
+                  return <AppointmentTooltip.Content {...pr}/>;
+                }}
+              />;
+            }}
+            // commandButtonComponent={(props)=>{
+            //   console.log(props);
+            //   return <div></div>;
+            // }}
           />
           <AppointmentForm
             commandLayoutComponent={
