@@ -79,7 +79,6 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
   const [snackbarText, setSnackbarText] =useState('Empty title');
 
   const handleSnackbarClose =()=>{
-    setSnackbarText('Please fill form');
     setOpenSnackbar(false);
   };
 
@@ -137,13 +136,26 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
   }, [currentRoom]);
 
   // eslint-disable-next-line react/display-name
-  const TimeTableCell = useCallback(React.memo(({onDoubleClick, ...restProps}) => (
+  const TimeTableCellWeek = useCallback(React.memo(({onDoubleClick, ...restProps}) => (
     <WeekView.TimeTableCell
       {...restProps}
       onClick={onDoubleClick}
     >
       <div className={styles.cellText}>click to create</div>
     </WeekView.TimeTableCell>
+  )), []);
+
+  // eslint-disable-next-line react/display-name
+  const TimeTableCellMonth = useCallback(React.memo(({onDoubleClick, ...restProps}) => (
+    <MonthView.TimeTableCell
+      {...restProps}
+      onClick={()=>{
+        setSnackbarText('Switch to week');
+        setOpenSnackbar(true);
+      }}
+    >
+      <div className={styles.cellText}>click to create</div>
+    </MonthView.TimeTableCell>
   )), []);
 
 
@@ -198,12 +210,14 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
           <DateNavigator/>
 
           <WeekView
-            timeTableCellComponent={TimeTableCell}
+            timeTableCellComponent={TimeTableCellWeek}
             startDayHour={6}
 
           />
           <ViewSwitcher/>
-          <MonthView/>
+          <MonthView
+            timeTableCellComponent={TimeTableCellMonth}
+          />
           <DayView/>
           <Appointments/>
 
@@ -275,6 +289,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid}) => 
                   }
                   onCommitButtonClick={(propses) => {
                     if (!curData) {
+                      setSnackbarText('Please fill form');
                       setOpenSnackbar(true);
                     } else {
                       props.onCommitButtonClick(propses);
