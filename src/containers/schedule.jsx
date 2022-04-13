@@ -222,7 +222,21 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAd
             timeTableCellComponent={TimeTableCellMonth}
           />
           <DayView/>
-          <Appointments/>
+          <Appointments
+            appointmentComponent={(props)=>{
+              const {data, ...restProps}=props;
+              console.log(data);
+              return (
+                <Appointments.Appointment
+                  {...restProps}
+                  data={data}
+                  onDoubleClick={()=>{
+                    if (isAdmin ||uid===data.creator)restProps.onDoubleClick();
+                  }}
+                />
+              );
+            }}
+          />
 
           <Resources data={resources}/>
 
