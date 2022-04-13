@@ -39,7 +39,6 @@ const mapStateToProps = ({currentRoom, rooms, user: {uid}}) => ({currentRoom, ro
 export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAdmin}) => {
   const [data, setData] = useState([]);
 
-
   const filter = {};
   if (currentRoom.id !== -1) {
     filter.room = {
