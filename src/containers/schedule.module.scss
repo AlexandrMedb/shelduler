@@ -41,3 +41,24 @@ background: green !important;
   }
 
 }
+
+
+.AppointmentTooltipHeader{
+  display: flex;
+  justify-content: end;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  svg{
+    cursor: pointer;
+    padding: 12px;
+    background: white;
+    transition: all 0.1s  ease;
+
+    &:hover{
+      background: rgba(245,245,245);
+      border-radius: 50%;
+
+    }
+  }
+}

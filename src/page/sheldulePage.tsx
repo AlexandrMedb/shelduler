@@ -56,7 +56,6 @@ export const SchedulePage=connect(mapStateToProps, {setRooms, setRoom})((props:p
   useEffect(() => {
     if (userGql?.user) {
       if (userGql?.user[0]) {
-        console.log(userGql?.user[0]);
         setUser(userGql?.user[0]);
         setISAdmin(!!userGql?.user[0]?.is_admin);
       }

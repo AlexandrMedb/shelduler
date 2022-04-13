@@ -28,6 +28,7 @@ import {FlexibleSpace} from '../components/flexibleSpace';
 import {Snackbar, Tooltip} from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import DeleteIcon from '@mui/icons-material/Delete';
+import DoneIcon from '@mui/icons-material/Done';
 
 
 import Button from '@mui/material/Button';
@@ -225,7 +226,6 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAd
           <Appointments
             appointmentComponent={(props)=>{
               const {data, ...restProps}=props;
-              console.log(data);
               return (
                 <Appointments.Appointment
                   {...restProps}
@@ -272,16 +272,27 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAd
             showDeleteButton={true}
             layoutComponent={(props)=>{
               const [editable, setEditable]=useState(true);
+              const [diolog, setDialog]=useState(false);
               return <AppointmentTooltip.Layout
                 {...props}
-                commandButtonComponent={(pr)=>{
+                headerComponent={(pr)=>{
+                  console.log(pr);
                   return (
-                    <AppointmentTooltip.CommandButton
-                      {...pr}
-                      style={{display: editable? '':'none'}}
-                    />)
-                  ;
-                }}
+                    <>
+                      {diolog?
+                          <div className={styles.AppointmentTooltipHeader}>
+                            <DoneIcon onClick={()=>pr.onDeleteButtonClick()}/>
+                            <CloseIcon onClick={()=>setDialog(false)}/>
+                          </div>:
+                    <AppointmentTooltip.Header {...pr}
+                      showDeleteButton={editable}
+                      showOpenButton={editable}
+                      onDeleteButtonClick={()=>setDialog(true)}
+                    />}
+                    </>
+                  );
+                }
+                }
                 contentComponent={(pr)=> {
                   if (!isAdmin)setEditable(pr?.appointmentData?.creator===uid);
                   return <AppointmentTooltip.Content {...pr}/>;
