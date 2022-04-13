@@ -272,14 +272,13 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAd
             showDeleteButton={true}
             layoutComponent={(props)=>{
               const [editable, setEditable]=useState(true);
-              const [diolog, setDialog]=useState(false);
+              const [dialog, setDialog]=useState(false);
               return <AppointmentTooltip.Layout
                 {...props}
                 headerComponent={(pr)=>{
-                  console.log(pr);
                   return (
                     <>
-                      {diolog?
+                      {dialog?
                           <div className={styles.AppointmentTooltipHeader}>
                             <DoneIcon onClick={()=>pr.onDeleteButtonClick()}/>
                             <CloseIcon onClick={()=>setDialog(false)}/>
@@ -303,6 +302,7 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAd
           <AppointmentForm
             commandLayoutComponent={
               (props) => {
+                const [dialog, setDialog]=useState(false);
                 return <AppointmentForm.CommandLayout {...props}
                   disableSaveButton={!curData}
                   commandButtonComponent={
@@ -316,15 +316,22 @@ export const Schedule = connect(mapStateToProps)(({currentRoom, rooms, uid, isAd
                           <CloseIcon/></div>;
                       }
                       if (props.id==='deleteButton') {
-                        return <DeleteIcon
-                          onClick={props.onExecute}
+                        return (
+                          <>
+                            {dialog?
+                                <div className={styles.AppointmentFormCommandLayout}>
+                                  <DoneIcon onClick={props.onExecute}/>
+                                  <CloseIcon onClick={()=>setDialog(false)}/>
+                                </div>:
+                        <DeleteIcon
+                          onClick={()=>setDialog(true)}
                           sx={{
                             cursor: 'pointer',
                             color: 'rgba(0, 0, 0, 0.54)',
                             borderRight: '1px solid rgba(0, 0, 0, 0.54)',
                             mr: 0.5,
                           }}
-                        />;
+                        />}</>);
                       }
 
                       return <Button sx={{color: !curData?'lightgray':''}}

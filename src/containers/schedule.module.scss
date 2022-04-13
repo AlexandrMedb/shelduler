@@ -62,3 +62,30 @@ background: green !important;
     }
   }
 }
+
+.AppointmentFormCommandLayout{
+  display: flex;
+  justify-content: end;
+  padding-right: 2px;
+  padding-top: 1px;
+  padding-bottom: 1px;
+  border-right: 1px solid black;
+  margin-right: 4px;
+  svg{
+    cursor: pointer;
+
+    background: white;
+    transition: all 0.1s  ease;
+    &:first-of-type{
+      margin-right: 8px;
+    }
+
+    &:hover{
+      background: rgba(245,245,245);
+      border-radius: 50%;
+
+
+
+    }
+  }
+}
